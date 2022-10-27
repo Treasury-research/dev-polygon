@@ -1,15 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './index.scss';
 import Logo from '../../static/img/logo.png';
 import Claim from './../claim';
 import Template from './../template';
 import { BrowserRouter as Router, Switch, Route, Redirect, Link } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router-dom';
+import { moduleActive } from '../../store/atom';
+import { useRecoilState } from 'recoil';
 
 export default function Home(props: RouteComponentProps) {
 
-  const routerTo = (str:string) => {
+  const [activeTabStr, setActiveTabStr] = useRecoilState(moduleActive);
+
+  useEffect(() => {
+    setComp(props.location.pathname);
+  }, []);
+
+  const routerTo = (str: string) => {
     props.history.push(`/${str}`);
+    setComp(str);
+  };
+
+  const setComp = (str: string) => {
+    if (str.includes('template')) {
+      setActiveTabStr('templateList')
+    } else {
+      setActiveTabStr('claimList')
+    }
   };
 
   return (

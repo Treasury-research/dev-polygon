@@ -1,15 +1,15 @@
-.claim-con {
+.link-con {
   height: 100%;
   width: 100%;
   position: relative;
 
-  .claim-top {
+  .link-top {
     width: 100%;
     overflow: hidden;
     padding-bottom: 40px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 
-    .claim-des {
+    .link-des {
       float: left;
       margin-left: 100px;
       margin-top: 5px;
@@ -26,13 +26,13 @@
       >div:nth-child(2) {
         font-size: 12px;
         color: rgba(255, 255, 255, .6);
-        width: 400px;
         margin-left: 20px;
+        width: 400px;
         margin-top: 4px;
       }
     }
 
-    .claim-return {
+    .link-return {
       cursor: pointer;
       height: 50px;
       width: 50px;
@@ -48,7 +48,7 @@
   }
 }
 
-.claim-form {
+.link-form {
   height: calc(100% - 100px);
   border: 1px solid rgba(0, 0, 0, .06);
   padding: 20px;
@@ -62,7 +62,11 @@
     font-size: 24px;
   }
 
-  .claim-base-info {
+  .border-title {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .link-base-info {
     display: flex;
 
     >div {
@@ -75,8 +79,24 @@
     }
   }
 
+  .link-url{
+    display: flex;
+
+    >div {
+      flex: 1;
+      height: 60px;
+      line-height: 60px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    >div:nth-child(1) {
+      font-size: 24px;
+    }
+    >div:nth-child(2) {
+      text-align: right;
+    }
+  }
   .info-common-style {
-    margin-bottom: 10px;
+    margin-bottom: 14px;
 
     >span:nth-child(1) {
       color: rgba(255, 255, 255, .9);
@@ -89,29 +109,7 @@
     }
   }
 
-  .claim--bound {
-    display: flex;
-
-    >div {
-      flex: 1;
-      margin-right: 80px;
-
-      >div {
-        margin-bottom: 10px;
-      }
-    }
-
-    >div:nth-child(2) {
-      margin-right: 0px;
-    }
-  }
-
-  .claim-claims-item {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    padding-bottom: 20px;
-  }
-
-  .claim-base-item {
+  .link-claims-item {
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     padding-bottom: 20px;
   }

@@ -81,6 +81,10 @@ tr.ant-table-expanded-row:hover>td {
 	color: #fff;
 }
 
+.ant-select-dropdown {
+	background: #1a1a1a;
+}
+
 .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
 	background: #1a1a1a;
 	border: none;
@@ -146,6 +150,13 @@ tr.ant-table-expanded-row:hover>td {
 	}
 }
 
-.ant-drawer-body{
+.ant-drawer-body {
 	background: #1a1a1a;
+}
+
+.copyIcon {
+	width: 12px;
+	height: 12px;
+	cursor: pointer;
+	margin-left: 4px;
 }

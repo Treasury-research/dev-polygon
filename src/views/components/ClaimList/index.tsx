@@ -5,8 +5,6 @@ import { PlusOutlined, DownOutlined } from '@ant-design/icons';
 import { Badge, Table, Drawer } from 'antd';
 import { moduleActive } from '../../../store/atom';
 import { useRecoilState } from 'recoil';
-import IconCopy from "./../../../static/img/copy.png";
-import { copyToClipboard } from "./../../../utils/tools";
 
 interface DataType {
   key: React.Key;
@@ -58,7 +56,7 @@ export default function List() {
       ),
     },
     {
-      title: 'Category', dataIndex: 'category', key: 'category', render: (category: string) => (
+      title: 'Category', dataIndex: 'category', key: 'category', render: (category:string) => (
         <div className="tag" style={{
           backgroundColor: category === 'ENS' ? '#fff' : category === 'NFT' ? 'rgb(32,128,226)' : category === 'LENS' ? 'green' : '#fff',
           color: category === 'NFT' || category === 'LENS' ? '#fff' : 'blue'
@@ -68,7 +66,7 @@ export default function List() {
       ),
     },
     { title: 'Offer Data', dataIndex: 'offerData', key: 'offerData' },
-    { title: 'Action', key: 'operation', render: () => <span className="offer" onClick={() => setActiveTabStr('offerClaims')}>Offer</span> },
+    { title: 'Action', key: 'operation', render: () => <span className="claim-offer" onClick={() => setActiveTabStr('revocation')}>Set Revocation</span> },
   ];
 
   const data: DataType[] = [];
@@ -83,28 +81,14 @@ export default function List() {
   }
 
   return (
-    <div className="list-page">
-      <div className="list-des">
-        <div className="list-title">Templates</div>
+    <div className="claimList-page">
+      <div className="claimList-des">
+        <div className="claimList-title">Claim Bounds</div>
         <div>
-          4 Templates
+          4 Bounds
         </div>
       </div>
-      <div className="list-btn">
-        <Button type="primary" icon={<PlusOutlined />} size="large" onClick={() => setActiveTabStr('creatTempalte')}>
-          Create Template
-        </Button>
-      </div>
-      {/* <div className="list-tabs">
-        {tabs.map((item, index) => (
-          <div key={item.value} className={(index === activeTabVal ? 'active' : '')} onClick={() => setActiveTabVal(index)}>
-            <span>
-              {item.name}
-            </span>
-          </div>
-        ))}
-      </div> */}
-      <div className="list-table">
+      <div className="claimList-table">
         <Table
           columns={columns}
           expandable={{ expandedRowRender, defaultExpandedRowKeys: ['0'] }}
@@ -131,12 +115,6 @@ export default function List() {
           <div>
             <span>NFT Contract:</span>
             <span>0xBx</span>
-            <span><img
-              alt=""
-              src={IconCopy}
-              onClick={() => copyToClipboard('1')}
-              className="copyIcon"
-            /></span>
           </div>
           <div>
             <span>Lower Bound:</span>
@@ -153,22 +131,10 @@ export default function List() {
           <div>
             <span>Class Hash:</span>
             <span>d78...</span>
-            <span><img
-              alt=""
-              src={IconCopy}
-              onClick={() => copyToClipboard('1')}
-              className="copyIcon"
-            /></span>
           </div>
           <div>
             <span>Class URL:</span>
             <span>https://s.3.eu-wesr-1....</span>
-            <span><img
-              alt=""
-              src={IconCopy}
-              onClick={() => copyToClipboard('1')}
-              className="copyIcon"
-            /></span>
           </div>
         </div>
       </Drawer>
