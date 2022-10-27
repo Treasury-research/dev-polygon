@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './index.less';
+import './index.scss';
 import { ArrowLeftOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { Checkbox, Radio, Input, Select, Button } from 'antd';
 import { moduleActive } from '../../../store/atom';
@@ -16,7 +16,7 @@ export default function CreateTemplate() {
     setDataCategory(value)
   };
 
-  const onChange = (e) => {
+  const onChange = (e:any) => {
     console.log(`checked = ${e.target.checked}`);
   };
 

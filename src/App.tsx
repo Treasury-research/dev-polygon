@@ -1,16 +1,16 @@
 import React, { Suspense } from 'react';
 import { Spin } from 'antd';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import home from './views/home/index';
-import './App.less';
-import './style/resetAntd.less';
+import Home from './views/home';
+import './App.css';
+import './style/resetAntd.scss';
 
 function App() {
   return (
-    <Suspense fallback={<Spin size="large" className="layout__loading" />}>
+    <Suspense>
       <Router>
         <Switch>
-            <Route path="/" component={home} />
+            <Route path="/" component={Home} />
         </Switch>
       </Router>
     </Suspense>

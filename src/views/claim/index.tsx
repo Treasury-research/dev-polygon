@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './index.less';
+import './index.scss';
 import { Button } from 'antd';
 import { PlusOutlined, DownOutlined } from '@ant-design/icons';
 import { Badge, Table } from 'antd';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './index.less';
+import './index.scss';
 import Logo from '../../static/img/logo.png';
 import Claim from './../claim';
 import Template from './../template';
@@ -8,7 +8,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 export default function Home(props: RouteComponentProps) {
 
-  const routerTo = (str) => {
+  const routerTo = (str:string) => {
     props.history.push(`/${str}`);
   };
 

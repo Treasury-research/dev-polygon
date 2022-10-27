@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './index.less';
+import './index.scss';
 import { Button } from 'antd';
 import { PlusOutlined, DownOutlined } from '@ant-design/icons';
 import { Badge, Table, Drawer } from 'antd';
@@ -51,12 +51,12 @@ export default function List() {
 
   const columns = [
     {
-      title: 'Template Names', dataIndex: 'templateName', key: 'templateName', render: (templateName) => (
+      title: 'Template Names', dataIndex: 'templateName', key: 'templateName', render: () => (
         <span className="templateName" onClick={() => showDrawer()}>templateName</span>
       ),
     },
     {
-      title: 'Category', dataIndex: 'category', key: 'category', render: (category) => (
+      title: 'Category', dataIndex: 'category', key: 'category', render: (category:string) => (
         <div className="tag" style={{
           backgroundColor: category === 'ENS' ? '#fff' : category === 'NFT' ? 'rgb(32,128,226)' : category === 'LENS' ? 'green' : '#fff',
           color: category === 'NFT' || category === 'LENS' ? '#fff' : 'blue'

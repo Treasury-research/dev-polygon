@@ -1,8 +1,0 @@
-/lambda/
-/scripts/*
-.history
-serviceWorker.ts
-/config/*
-/public/*
-*.js
-*.tsx

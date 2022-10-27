@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './index.less';
+import './index.scss';
 import CreatTempalte from './../components/CreatTempalte';
 import TemplateList from './../components/TemplateList';
 import OfferClaims from './../components/OfferClaims';
