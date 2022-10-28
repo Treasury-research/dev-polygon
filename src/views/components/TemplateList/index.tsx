@@ -18,14 +18,34 @@ interface DataType {
   offerData: string;
 }
 
+const expandedRowRender = (record:any, index: number) => {
+  const columns = [
+    { title: 'Class Name', dataIndex: 'name', key: 'name' },
+    { title: 'Lower Bound', dataIndex: 'lowerBoundType', key: 'lowerBoundType', render: (text:any) => text && text.length > 0 ? <span>{text[0] === 1 && ">"}{text[1] === 1 && '='}</span> : '' },
+    { title: 'Upper Bound', dataIndex: 'upperBoundType', key: 'upperBoundType', render: (text:any) => text && text.length > 0 ? <span>{text[0] === 1 && "<"}{text[1] === 1 && '='}</span> : '' },
+    { title: 'Description', dataIndex: 'description', key: 'description' },
+  ];
+
+  console.log('datai s', record)
+
+  let renderData = record.classfications ? JSON.parse(record.classfications) : [];
+
+  if(!Array.isArray(renderData) ){
+    renderData  = []
+  }
+
+  console.log('render data is', renderData)
+
+  return <Table columns={columns} dataSource={renderData} pagination={false} />;
+};
+
+
 export default function List() {
   const [activeTabVal, setActiveTabVal] = useState(0);
 
   const [activeTabStr, setActiveTabStr] = useRecoilState(moduleActive);
 
   const [templateList, setTemplateList] = useState([]);
-
-  const [activeRowData, setActiveRowData] = useState([]);
 
   const [open, setOpen] = useState(false);
 
@@ -47,38 +67,6 @@ export default function List() {
     setOpen(false);
   };
 
-  const expandedRowRender = (record:any, index: number) => {
-    const columns = [
-      { title: 'Class Name', dataIndex: 'name', key: 'name' },
-      { title: 'Lower Bound', dataIndex: 'lowerBoundType', key: 'lowerBoundType', render: (text:any) => text && text.length > 0 ? <span>{text[0] === 1 && ">"}{text[1] === 1 && '='}</span> : '' },
-      { title: 'Upper Bound', dataIndex: 'upperBoundType', key: 'upperBoundType', render: (text:any) => text && text.length > 0 ? <span>{text[0] === 1 && "<"}{text[1] === 1 && '='}</span> : '' },
-      { title: 'Description', dataIndex: 'description', key: 'description' },
-    ];
-
-    console.log('datai s', record)
-
-    // const data = [];
-    // for (let i = 0; i < 3; ++i) {
-    //   data.push({
-    //     key: i.toString(),
-    //     className: 'Entry',
-    //     lowerBound: '-(Default>0)',
-    //     uperBound: 'inclusive(≤)',
-    //     revocationTrigger: 'Never'
-    //   });
-    // }
-    let renderData = record.classfications ? JSON.parse(record.classfications) : [];
-
-    if(!Array.isArray(renderData) ){
-      renderData  = []
-    }
-
-    console.log('render data is', renderData)
-
-
-    return <Table columns={columns} dataSource={renderData} pagination={false} />;
-  };
-
   const columns = [
     {
       title: 'Template Names', dataIndex: 'name', key: 'name', render: (text: string, record: any) => (
@@ -98,23 +86,6 @@ export default function List() {
     { title: 'Create Time', dataIndex: 'createdAt', key: 'createdAt', render: (text: string) => <span>{text.split('T')[0]}</span> },
     { title: 'Action', key: 'operation', render: () => <span className="offer" onClick={() => setActiveTabStr('offerClaims')}>Offer</span> },
   ];
-
-  // const onExpandRow = (expanded: boolean, record: any) => {
-  //   if(expanded){
-  //     setActiveRowData(JSON.parse(record.classfications))
-  //   }
-  // }
-
-  // const data: DataType[] = [];
-
-  // for (let i = 0; i < 3; ++i) {
-  //   data.push({
-  //     key: i.toString(),
-  //     templateName: 'ENS-Holding-Num',
-  //     category: 'LENS',
-  //     offerData: '21/10/2022'
-  //   });
-  // }
 
   return (
     <div className="list-page">
