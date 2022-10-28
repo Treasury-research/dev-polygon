@@ -38,7 +38,8 @@ export default function List() {
     getTemplateList();
   }, []);
 
-  const showDrawer = () => {
+  const showDrawer = (record: any) => {
+    console.log('rrecord', record)
     setOpen(true);
   };
 
@@ -46,13 +47,15 @@ export default function List() {
     setOpen(false);
   };
 
-  const expandedRowRender = () => {
+  const expandedRowRender = (record:any, index: number) => {
     const columns = [
       { title: 'Class Name', dataIndex: 'name', key: 'name' },
-      { title: 'Lower Bound', dataIndex: 'lowerBoundType', key: 'lowerBoundType', render: (text:any) => <span>{text[0] === 1}&gt;{text[1] === 1 && '='}</span> },
-      { title: 'Upper Bound', dataIndex: 'upperBoundType', key: 'upperBoundType', render: (text:any) => <span>{text[0] === 1}&lt;{text[1] === 1 && '='}</span> },
+      { title: 'Lower Bound', dataIndex: 'lowerBoundType', key: 'lowerBoundType', render: (text:any) => text && text.length > 0 ? <span>{text[0] === 1 && ">"}{text[1] === 1 && '='}</span> : '' },
+      { title: 'Upper Bound', dataIndex: 'upperBoundType', key: 'upperBoundType', render: (text:any) => text && text.length > 0 ? <span>{text[0] === 1 && "<"}{text[1] === 1 && '='}</span> : '' },
       { title: 'Description', dataIndex: 'description', key: 'description' },
     ];
+
+    console.log('datai s', record)
 
     // const data = [];
     // for (let i = 0; i < 3; ++i) {
@@ -64,13 +67,22 @@ export default function List() {
     //     revocationTrigger: 'Never'
     //   });
     // }
-    return <Table columns={columns} dataSource={activeRowData} pagination={false} />;
+    let renderData = record.classfications ? JSON.parse(record.classfications) : [];
+
+    if(!Array.isArray(renderData) ){
+      renderData  = []
+    }
+
+    console.log('render data is', renderData)
+
+
+    return <Table columns={columns} dataSource={renderData} pagination={false} />;
   };
 
   const columns = [
     {
-      title: 'Template Names', dataIndex: 'name', key: 'name', render: (text: string) => (
-        <span className="templateName" onClick={() => showDrawer()}>{text}</span>
+      title: 'Template Names', dataIndex: 'name', key: 'name', render: (text: string, record: any) => (
+        <span className="templateName" onClick={() => showDrawer(record)}>{text}</span>
       ),
     },
     {
@@ -83,15 +95,15 @@ export default function List() {
         </div>
       ),
     },
-    { title: 'Offer Data', dataIndex: 'offerData', key: 'offerData' },
+    { title: 'Create Time', dataIndex: 'createdAt', key: 'createdAt', render: (text: string) => <span>{text.split('T')[0]}</span> },
     { title: 'Action', key: 'operation', render: () => <span className="offer" onClick={() => setActiveTabStr('offerClaims')}>Offer</span> },
   ];
 
-  const onExpandRow = (expanded: boolean, record: any) => {
-    if(expanded){
-      setActiveRowData(JSON.parse(record.classfications))
-    }
-  }
+  // const onExpandRow = (expanded: boolean, record: any) => {
+  //   if(expanded){
+  //     setActiveRowData(JSON.parse(record.classfications))
+  //   }
+  // }
 
   // const data: DataType[] = [];
 
@@ -109,7 +121,7 @@ export default function List() {
       <div className="list-des">
         <div className="list-title">Templates</div>
         <div>
-          4 Templates
+          {templateList.length} Templates
         </div>
       </div>
       <div className="list-btn">
@@ -129,7 +141,7 @@ export default function List() {
       <div className="list-table">
         <Table
           columns={columns}
-          expandable={{ expandedRowRender, defaultExpandedRowKeys: ['0'], onExpand: onExpandRow }}
+          expandable={{ expandedRowRender }}
           dataSource={templateList}
           pagination={false}
         />
