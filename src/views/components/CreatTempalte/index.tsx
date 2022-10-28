@@ -35,16 +35,19 @@ export default function CreateTemplate() {
 
   const onClassificationChange = (index: number, field: string, value: string) => {
     setClassifications((prev:any) => {
-      prev[index][field] = value;
-      return [...prev]
+      let obj  = JSON.parse(JSON.stringify(prev));
+      console.log('obj is', obj)
+      obj[index][field] = value;
+      return [...obj]
     })
   }
 
   const onBoundChange = (index: number, field: string, subIndex: number, value: number) => {
     console.log('bond change', index, field, subIndex, value)
     setClassifications((prev:any) => {
-      prev[index][field][subIndex] = value;
-      return [...prev]
+      let obj  = JSON.parse(JSON.stringify(prev));
+      obj[index][field][subIndex] = value;
+      return [...obj]
     })
   }
 
@@ -52,6 +55,7 @@ export default function CreateTemplate() {
     const res:any = await api.template.create({
       name: templateName,
       dataCategory,
+      subCategory,
       classfications: JSON.stringify(clasifications),
     })
     if(res.code === 200){
@@ -125,7 +129,10 @@ export default function CreateTemplate() {
           )}
 
         {clasifications.map((item:any, index: number) => <div key={index} className="template-form-class-item">
-          <div className="template-form-class-name">Class #{index + 1}</div>
+          <div className='template-class-header'>
+            <div className="template-form-class-name">Class #{index + 1}</div>
+            <a className='icon-minus' onClick={()=> removeTemplate(index)}>-</a>
+          </div>
           <div>
             <div className="template-form-input-item">
               <div>Class name<span className="require">*</span></div>

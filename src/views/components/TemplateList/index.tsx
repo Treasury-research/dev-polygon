@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './index.scss';
 import api from '../../../api';
-import { message } from 'antd';
 import { Button } from 'antd';
 import { dataCategoryList } from '../../../config'
-import { PlusOutlined, DownOutlined } from '@ant-design/icons';
-import { Badge, Table, Drawer } from 'antd';
-import { moduleActive } from '../../../store/atom';
+import { PlusOutlined } from '@ant-design/icons';
+import { Table, Drawer } from 'antd';
+import { moduleActive, activeDrawerState } from '../../../store/atom';
 import { useRecoilState } from 'recoil';
 import IconCopy from "./../../../static/img/copy.png";
 import { copyToClipboard } from "./../../../utils/tools";
@@ -18,7 +17,7 @@ interface DataType {
   offerData: string;
 }
 
-const expandedRowRender = (record:any, index: number) => {
+const expandedRowRender = (record:any) => {
   const columns = [
     { title: 'Class Name', dataIndex: 'name', key: 'name' },
     { title: 'Lower Bound', dataIndex: 'lowerBoundType', key: 'lowerBoundType', render: (text:any) => text && text.length > 0 ? <span>{text[0] === 1 && ">"}{text[1] === 1 && '='}</span> : '' },
@@ -36,9 +35,8 @@ const expandedRowRender = (record:any, index: number) => {
 };
 
 export default function List() {
-  const [activeTabVal, setActiveTabVal] = useState(0);
-
   const [activeTabStr, setActiveTabStr] = useRecoilState(moduleActive);
+  const [activeDrawer, setActiveDrawer] = useRecoilState<any>(activeDrawerState);
 
   const [templateList, setTemplateList] = useState([]);
 
@@ -54,7 +52,8 @@ export default function List() {
   }, []);
 
   const showDrawer = (record: any) => {
-    console.log('rrecord', record)
+    console.log('rec', record)
+    setActiveDrawer(record);
     setOpen(true);
   };
 
@@ -122,36 +121,52 @@ export default function List() {
       >
         <div className="drawer-des">
           <div>
-            <span>Class name:</span>
-            <span>BAYC</span>
+            <span>Template name:</span>
+            <span>{activeDrawer?.name}</span>
           </div>
           <div>
             <span>Data Category:</span>
-            <span>NFT</span>
+            <span>{dataCategoryList[activeDrawer?.dataCategory]}</span>
           </div>
-          <div>
-            <span>NFT Contract:</span>
-            <span>0xBx</span>
-            <span><img
-              alt=""
-              src={IconCopy}
-              onClick={() => copyToClipboard('1')}
-              className="copyIcon"
-            /></span>
+          {
+            activeDrawer.dataCategory === '1' &&  <div>
+              <span>NFT Contract:</span>
+              <span>{activeDrawer.subCategory}</span>
+              <span><img
+                alt=""
+                src={IconCopy}
+                onClick={() => copyToClipboard(activeDrawer.subCategory)}
+                className="copyIcon"
+              /></span>
           </div>
-          <div>
+          }
+
+          {
+            activeDrawer.dataCategory === '2' &&  <div>
+              <span>Space ID:</span>
+              <span>{activeDrawer.subCategory}</span>
+              <span><img
+                alt=""
+                src={IconCopy}
+                onClick={() => copyToClipboard(activeDrawer.subCategory)}
+                className="copyIcon"
+              /></span>
+          </div>
+          }
+         
+          {/* <div>
             <span>Lower Bound:</span>
             <span>-(Default `{'>'}` 0)</span>
           </div>
           <div>
             <span>Upper Bound:</span>
             <span>Exclusive (`{'>'}`)</span>
-          </div>
+          </div> */}
           <div>
             <span>Creation Date:</span>
-            <span>21/10/2022</span>
+            <span>{activeDrawer.createdAt}</span>
           </div>
-          <div>
+          {/* <div>
             <span>Class Hash:</span>
             <span>d78...</span>
             <span><img
@@ -160,8 +175,8 @@ export default function List() {
               onClick={() => copyToClipboard('1')}
               className="copyIcon"
             /></span>
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <span>Class URL:</span>
             <span>https://s.3.eu-wesr-1....</span>
             <span><img
@@ -170,7 +185,7 @@ export default function List() {
               onClick={() => copyToClipboard('1')}
               className="copyIcon"
             /></span>
-          </div>
+          </div> */}
         </div>
       </Drawer>
     </div>
