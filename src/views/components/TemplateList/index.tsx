@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './index.scss';
+import api from '../../../api';
+import { message } from 'antd';
 import { Button } from 'antd';
+import { dataCategoryList } from '../../../config'
 import { PlusOutlined, DownOutlined } from '@ant-design/icons';
 import { Badge, Table, Drawer } from 'antd';
 import { moduleActive } from '../../../store/atom';
@@ -18,7 +21,20 @@ export default function List() {
 
   const [activeTabStr, setActiveTabStr] = useRecoilState(moduleActive);
 
+  const [templateList, setTemplateList] = useState([]);
+
+  const [activeRowData, setActiveRowData] = useState([]);
+
   const [open, setOpen] = useState(false);
+
+  const getTemplateList = async () => {
+    const res:any = await api.template.list();
+    setTemplateList(res?.result?.data);
+  };
+
+  useEffect(() => {
+    getTemplateList();
+  }, []);
 
   const showDrawer = () => {
     setOpen(true);
@@ -30,55 +46,61 @@ export default function List() {
 
   const expandedRowRender = () => {
     const columns = [
-      { title: 'Class Name', dataIndex: 'className', key: 'className' },
-      { title: 'Lower Bound', dataIndex: 'lowerBound', key: 'lowerBound' },
-      { title: 'Upper Bound', dataIndex: 'uperBound', key: 'uperBound' },
-      { title: 'Revocation Trigger', dataIndex: 'revocationTrigger', key: 'revocationTrigger' },
+      { title: 'Class Name', dataIndex: 'name', key: 'name' },
+      { title: 'Lower Bound', dataIndex: 'lowerBoundType', key: 'lowerBoundType', render: (text:any) => <span>{text[0] === 1}&gt;{text[1] === 1 && '='}</span> },
+      { title: 'Upper Bound', dataIndex: 'upperBoundType', key: 'upperBoundType', render: (text:any) => <span>{text[0] === 1}&lt;{text[1] === 1 && '='}</span> },
+      { title: 'Description', dataIndex: 'description', key: 'description' },
     ];
 
-    const data = [];
-    for (let i = 0; i < 3; ++i) {
-      data.push({
-        key: i.toString(),
-        className: 'Entry',
-        lowerBound: '-(Default>0)',
-        uperBound: 'inclusive(≤)',
-        revocationTrigger: 'Never'
-      });
-    }
-    return <Table columns={columns} dataSource={data} pagination={false} />;
+    // const data = [];
+    // for (let i = 0; i < 3; ++i) {
+    //   data.push({
+    //     key: i.toString(),
+    //     className: 'Entry',
+    //     lowerBound: '-(Default>0)',
+    //     uperBound: 'inclusive(≤)',
+    //     revocationTrigger: 'Never'
+    //   });
+    // }
+    return <Table columns={columns} dataSource={activeRowData} pagination={false} />;
   };
 
   const columns = [
     {
-      title: 'Template Names', dataIndex: 'templateName', key: 'templateName', render: () => (
-        <span className="templateName" onClick={() => showDrawer()}>templateName</span>
+      title: 'Template Names', dataIndex: 'name', key: 'name', render: (text: string) => (
+        <span className="templateName" onClick={() => showDrawer()}>{text}</span>
       ),
     },
     {
-      title: 'Category', dataIndex: 'category', key: 'category', render: (category:string) => (
+      title: 'Category', dataIndex: 'dataCategory', key: 'dataCategory', render: (category:string) => (
         <div className="tag" style={{
-          backgroundColor: category === 'ENS' ? '#fff' : category === 'NFT' ? 'rgb(32,128,226)' : category === 'LENS' ? 'green' : '#fff',
-          color: category === 'NFT' || category === 'LENS' ? '#fff' : 'blue'
+          backgroundColor: category === '0' ? '#fff' : category === '1' ? 'rgb(32,128,226)' : category === '3' ? 'green' : '#fff',
+          color: category === '1' || category === '3' ? '#fff' : 'blue'
         }}>
-          {category}
+          {dataCategoryList[Number(category)]}
         </div>
       ),
     },
-    { title: 'Offer Data', dataIndex: 'offerData', key: 'offerData' },
+    { title: 'Created Time', dataIndex: 'createdAt', key: 'createdAt', render: (text: string) => <span>{text.split('T')[0]}</span> },
     { title: 'Action', key: 'operation', render: () => <span className="offer">Offer</span> },
   ];
 
-  const data: DataType[] = [];
-
-  for (let i = 0; i < 3; ++i) {
-    data.push({
-      key: i.toString(),
-      templateName: 'ENS-Holding-Num',
-      category: 'LENS',
-      offerData: '21/10/2022'
-    });
+  const onExpandRow = (expanded: boolean, record: any) => {
+    if(expanded){
+      setActiveRowData(JSON.parse(record.classfications))
+    }
   }
+
+  // const data: DataType[] = [];
+
+  // for (let i = 0; i < 3; ++i) {
+  //   data.push({
+  //     key: i.toString(),
+  //     templateName: 'ENS-Holding-Num',
+  //     category: 'LENS',
+  //     offerData: '21/10/2022'
+  //   });
+  // }
 
   return (
     <div className="list-page">
@@ -105,8 +127,8 @@ export default function List() {
       <div className="list-table">
         <Table
           columns={columns}
-          expandable={{ expandedRowRender, defaultExpandedRowKeys: ['0'] }}
-          dataSource={data}
+          expandable={{ expandedRowRender, defaultExpandedRowKeys: ['0'], onExpand: onExpandRow }}
+          dataSource={templateList}
           pagination={false}
         />
       </div>
