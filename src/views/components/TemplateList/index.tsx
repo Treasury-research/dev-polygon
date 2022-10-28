@@ -8,6 +8,8 @@ import { PlusOutlined, DownOutlined } from '@ant-design/icons';
 import { Badge, Table, Drawer } from 'antd';
 import { moduleActive } from '../../../store/atom';
 import { useRecoilState } from 'recoil';
+import IconCopy from "./../../../static/img/copy.png";
+import { copyToClipboard } from "./../../../utils/tools";
 
 interface DataType {
   key: React.Key;
@@ -81,8 +83,8 @@ export default function List() {
         </div>
       ),
     },
-    { title: 'Created Time', dataIndex: 'createdAt', key: 'createdAt', render: (text: string) => <span>{text.split('T')[0]}</span> },
-    { title: 'Action', key: 'operation', render: () => <span className="offer">Offer</span> },
+    { title: 'Offer Data', dataIndex: 'offerData', key: 'offerData' },
+    { title: 'Action', key: 'operation', render: () => <span className="offer" onClick={() => setActiveTabStr('offerClaims')}>Offer</span> },
   ];
 
   const onExpandRow = (expanded: boolean, record: any) => {
@@ -151,6 +153,12 @@ export default function List() {
           <div>
             <span>NFT Contract:</span>
             <span>0xBx</span>
+            <span><img
+              alt=""
+              src={IconCopy}
+              onClick={() => copyToClipboard('1')}
+              className="copyIcon"
+            /></span>
           </div>
           <div>
             <span>Lower Bound:</span>
@@ -167,10 +175,22 @@ export default function List() {
           <div>
             <span>Class Hash:</span>
             <span>d78...</span>
+            <span><img
+              alt=""
+              src={IconCopy}
+              onClick={() => copyToClipboard('1')}
+              className="copyIcon"
+            /></span>
           </div>
           <div>
             <span>Class URL:</span>
             <span>https://s.3.eu-wesr-1....</span>
+            <span><img
+              alt=""
+              src={IconCopy}
+              onClick={() => copyToClipboard('1')}
+              className="copyIcon"
+            /></span>
           </div>
         </div>
       </Drawer>

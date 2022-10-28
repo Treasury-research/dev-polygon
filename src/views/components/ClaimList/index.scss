@@ -1,15 +1,15 @@
-.list-page {
+.claimList-page {
   height: 100%;
   width: 100%;
 }
 
-.list-title {
+.claimList-title {
   font-size: 30px;
   color: #fff;
   margin-bottom: 10px;
 }
 
-.list-des {
+.claimList-des {
   margin-bottom: 4px;
   width: 100%;
   overflow: hidden;
@@ -33,13 +33,13 @@
   }
 }
 
-.list-btn {
+.claimList-btn {
   position: absolute;
   right: 60px;
   top: 60px;
 }
 
-.list-tabs {
+.claimList-tabs {
   margin-top: 60px;
   overflow: hidden;
 
@@ -59,7 +59,7 @@
   }
 }
 
-.list-table {
+.claimList-table {
   margin-top: 20px;
   width: 100%;
   height: calc(100% - 100px);
@@ -73,9 +73,9 @@
   border-radius: 50px;
 }
 
-.offer {
+.claim-offer {
   display: block;
-  width: 100px;
+  width: 140px;
   background: #000;
   padding: 3px 0;
   text-align: center;
