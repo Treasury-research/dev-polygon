@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './index.scss';
 import {dataCategoryList} from '../../../config'
+import IconRemove from '../../../static/img/class-remove.png';
 import api from '../../../api';
 import { ArrowLeftOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { Checkbox, Radio, Input, Select, Button, message } from 'antd';
@@ -131,7 +132,7 @@ export default function CreateTemplate() {
         {clasifications.map((item:any, index: number) => <div key={index} className="template-form-class-item">
           <div className='template-class-header'>
             <div className="template-form-class-name">Class #{index + 1}</div>
-            <a className='icon-minus' onClick={()=> removeTemplate(index)}>-</a>
+            <img src={IconRemove} className="icon-remove" onClick={()=> removeTemplate(index)} />
           </div>
           <div>
             <div className="template-form-input-item">
