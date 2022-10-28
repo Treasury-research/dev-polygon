@@ -26,19 +26,14 @@ const expandedRowRender = (record:any, index: number) => {
     { title: 'Description', dataIndex: 'description', key: 'description' },
   ];
 
-  console.log('datai s', record)
-
   let renderData = record.classfications ? JSON.parse(record.classfications) : [];
 
   if(!Array.isArray(renderData) ){
     renderData  = []
   }
 
-  console.log('render data is', renderData)
-
   return <Table columns={columns} dataSource={renderData} pagination={false} />;
 };
-
 
 export default function List() {
   const [activeTabVal, setActiveTabVal] = useState(0);
@@ -111,6 +106,7 @@ export default function List() {
       </div> */}
       <div className="list-table">
         <Table
+          rowKey="id"
           columns={columns}
           expandable={{ expandedRowRender }}
           dataSource={templateList}
