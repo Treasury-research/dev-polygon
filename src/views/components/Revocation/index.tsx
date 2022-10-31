@@ -196,7 +196,7 @@ export default function CreateTemplate() {
           </div>
         </div>
         {classfications.map((item: any, index: number) =>
-          <div className="revocation-claims-item">
+          <div className="revocation-claims-item" key={index}>
             <div className="revocation-form-title">Claims #1</div>
             <div className="revocation-base-item">
               <div className="revocation-base-info">

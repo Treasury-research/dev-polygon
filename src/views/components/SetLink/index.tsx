@@ -62,7 +62,7 @@ export default function CreateTemplate() {
       <div className="link-form">
         <div className="link-form-title border-title">Claims Offering</div>
         {classfications.map((item: any, index: number) =>
-          <div className="link-claims-item">
+          <div className="link-claims-item" key={index}>
             <div className="link-form-title">Claims #{index + 1}</div>
             <div className="link-base-item">
               <div className="link-base-info">

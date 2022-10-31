@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './index.scss';
 import api from '../../../api';
-import { message } from 'antd';
 import { Button } from 'antd';
 import { dataCategoryList } from '../../../config'
 import { PlusOutlined, DownOutlined } from '@ant-design/icons';
 import { Badge, Table, Drawer } from 'antd';
-import { moduleActive, templateInfos } from '../../../store/atom';
+import { moduleActive, templateInfos, activeDrawerState } from '../../../store/atom';
 import { useRecoilState } from 'recoil';
 import IconCopy from "./../../../static/img/copy.png";
 import { copyToClipboard } from "./../../../utils/tools";
@@ -23,11 +22,9 @@ const DataType = {
 }
 // dataCategory subCategory  lowerBoundType upperBoundType createdAt description
 
-
 export default function List() {
-  const [activeTabVal, setActiveTabVal] = useState(0);
-
   const [activeTabStr, setActiveTabStr] = useRecoilState(moduleActive);
+  const [activeDrawer, setActiveDrawer] = useRecoilState<any>(activeDrawerState);
 
   const [templateList, setTemplateList] = useState([]);
 
@@ -47,8 +44,8 @@ export default function List() {
   }, []);
 
   const showDrawer = (record: any) => {
+    setActiveDrawer(record);
     setOpen(true);
-    setDrawerRecords(record);
   };
 
   const onClose = () => {
@@ -151,45 +148,43 @@ export default function List() {
         <div className="drawer-des">
           <div>
             <span>Template name:</span>
-            <span>{drawerRecords.templateName}</span>
+            <span>{activeDrawer.templateName}</span>
           </div>
           <div>
             <span>Class name:</span>
-            <span>{drawerRecords.name}</span>
+            <span>{activeDrawer.name}</span>
           </div>
           <div>
             <span>Data Category:</span>
-            <span>{dataCategoryList[Number(drawerRecords.dataCategory)]}</span>
+            <span>{dataCategoryList[activeDrawer?.dataCategory]}</span>
           </div>
           {
-            drawerRecords.dataCategory === '1' && (
-              <div>
-                <span>NFT Contract:</span>
-                <span>{drawerRecords.subCategory}</span>
-                <span><img
-                  alt=""
-                  src={IconCopy}
-                  onClick={() => copyToClipboard(drawerRecords.subCategory)}
-                  className="copyIcon"
-                /></span>
-              </div>
-            )
+            activeDrawer.dataCategory === '1' &&  <div>
+              <span>NFT Contract:</span>
+              <span>{activeDrawer.subCategory}</span>
+              <span><img
+                alt=""
+                src={IconCopy}
+                onClick={() => copyToClipboard(activeDrawer.subCategory)}
+                className="copyIcon"
+              /></span>
+          </div>
           }
+
           {
-            drawerRecords.dataCategory === '2' && (
-              <div>
-                <span>Space ID:</span>
-                <span>{drawerRecords.subCategory}</span>
-                <span><img
-                  alt=""
-                  src={IconCopy}
-                  onClick={() => copyToClipboard(drawerRecords.subCategory)}
-                  className="copyIcon"
-                /></span>
-              </div>
-            )
+            activeDrawer.dataCategory === '2' &&  <div>
+              <span>Space ID:</span>
+              <span>{activeDrawer.subCategory}</span>
+              <span><img
+                alt=""
+                src={IconCopy}
+                onClick={() => copyToClipboard(activeDrawer.subCategory)}
+                className="copyIcon"
+              /></span>
+          </div>
           }
-          <div>
+         
+          {/* <div>
             <span>Lower Bound:</span>
             <span>{drawerRecords.lowerBoundType[0] === 0 ? '--' : drawerRecords.lowerBoundType[1] === 1 ? '≥' : '>'}</span>
           </div>
@@ -200,8 +195,17 @@ export default function List() {
           <div>
             <span>Creation Date:</span>
             <span>{drawerRecords.createdAt.split('T')[0]}</span>
+            <span>Exclusive (`{'>'}`)</span>
+          </div> */}
+          <div>
+            <span>Creation Date:</span>
+            <span>{activeDrawer.createdAt}</span>
           </div>
           <div>
+            <span>Description:</span>
+            <span>{activeDrawer.description}</span>
+          </div>
+          {/* <div>
             <span>Class Hash:</span>
             <span>...</span>
             <span><img
@@ -214,13 +218,17 @@ export default function List() {
           <div>
             <span>Description:</span>
             <span>{drawerRecords.description}</span>
+          </div> */}
+          {/* <div>
+            <span>Class URL:</span>
+            <span>https://s.3.eu-wesr-1....</span>
             <span><img
               alt=""
               src={IconCopy}
               onClick={() => copyToClipboard(drawerRecords.description)}
               className="copyIcon"
             /></span>
-          </div>
+          </div> */}
         </div>
       </Drawer>
     </div>

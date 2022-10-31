@@ -3,6 +3,21 @@
   width: 100%;
   position: relative;
 
+  .template-class-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .icon-remove{
+    width: 32px;
+    height: 32px;
+    float: right;
+    cursor: pointer;
+    margin-left: 20px;
+  }
+
   .template-top {
     width: 100%;
     overflow: hidden;
@@ -93,7 +108,6 @@
     .template-form-class-name {
       font-size: 24px;
       margin-bottom: 20px;
-
       &::before {
         width: 2px;
         height: 20px;
@@ -102,6 +116,10 @@
         display: inline-block;
         margin-right: 10px;
       }
+    }
+
+    .class-item{
+      width: fit-content;
     }
   }
 
@@ -144,16 +162,23 @@
 
   .date-check {
     margin-bottom: 10px;
+    overflow: hidden;
+    >div{
+      float: left;
+    }
+    >div:nth-child(1){
+      height: 30px;
+      line-height: 30px;
+    }
+    .date-des{
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      text-indent: 14px;
+    }
   }
 
   .check-des {
     font-size: 18px;
-  }
-
-  .date-des {
-    color: #00000073;
-    font-size: 14px;
-    text-indent: 24px;
   }
 
   .button-group {

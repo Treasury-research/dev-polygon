@@ -9,3 +9,10 @@ export const templateInfos = atom({
   key: "templateInfos",
   default: {}
 });
+
+export const activeDrawerState = atom({
+  key: 'activeDrawerState',
+  default: {
+    
+  }
+})
