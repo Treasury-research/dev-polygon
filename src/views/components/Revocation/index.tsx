@@ -1,34 +1,125 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './index.scss';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { Checkbox, Select, Button } from 'antd';
-import { moduleActive } from '../../../store/atom';
+import { Checkbox, Select, Button, message } from 'antd';
+import { moduleActive, templateInfos } from '../../../store/atom';
 import { useRecoilState } from 'recoil';
 import { RouteComponentProps, useHistory } from 'react-router-dom';
 import IconCopy from "./../../../static/img/copy.png";
 import { copyToClipboard } from "./../../../utils/tools";
+import { dataCategoryList } from '../../../config';
+import api from '../../../api';
 const { Option } = Select;
+
+const defaultClassficationItem = {
+  name: '',
+  lowerBoundType: [0, 0, null, 1],
+  upperBoundType: [0, 0, null, 1],
+  description: '',
+}
 
 export default function CreateTemplate() {
 
   const [, setActiveTabStr] = useRecoilState(moduleActive);
+
+  const [templateInfo, setTemplateInfo] = useRecoilState<any>(templateInfos);
+
+  const [classfications, setClassfications] = useState<any>([defaultClassficationItem]);
+
+  const [triggerValue, setTriggerValue] = useState('0');
+
   const history = useHistory();
 
   const onChange = (e: any) => {
     console.log(`checked = ${e.target.checked}`);
   };
 
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
+  useEffect(() => {
+    let classItems: any = JSON.parse(templateInfo.classfications);
+    classItems.map((t: any) => {
+      t.lowerBoundType[3] = 1;
+      t.upperBoundType[3] = 1;
+      t.triggerValue = '0';
+    })
+    setClassfications(classItems);
+  }, []);
+
+  const handleChange = (index: number, value: string) => {
+    setTriggerValue(value);
+    setClassfications((prev: any) => {
+      let classCations = [...prev];
+      classCations.map((t: any, i: number) => {
+        if (index === i) {
+          if (value === '0') {
+            t.lowerBoundType[3] = 1;
+            t.upperBoundType[3] = 1;
+          }
+          if (value === '1') {
+            t.lowerBoundType[3] = 0;
+            t.upperBoundType[3] = 1;
+          }
+          if (value === '2') {
+            t.lowerBoundType[3] = 1;
+            t.upperBoundType[3] = 0;
+          }
+          if (value === '3') {
+            t.lowerBoundType[3] = 0;
+            t.upperBoundType[3] = 0;
+          }
+          t.triggerValue = value;
+        }
+      });
+      return [...classCations];
+    })
   };
 
   const fallback = () => {
-    if(history.location.pathname === '/template'){
+    if (history.location.pathname === '/template') {
       setActiveTabStr('setLink')
-    }else{
+    } else {
       setActiveTabStr('claimList')
     }
   };
+
+  const finishOffer = async () => {
+
+    let preClaims: any = [];
+
+    classfications.map((t: any) => {
+      preClaims.push({
+        name: t.name,
+        datacategory: templateInfo.dataCategory,
+        subcategory: templateInfo.subcategory,
+        lowerBound: t.lowerBoundType, // 是否选择，是否包含 , 具体数值 ,  是否triger
+        upperBound: t.upperBoundType,
+        createDate: templateInfo.createdAt,
+        expirationDate: templateInfo.expirationDate, // 过期时间
+      })
+    })
+
+    let parms: object = {
+      name: templateInfo.name,
+      template: templateInfo.id,
+      link: templateInfo.link,
+      preClaims: JSON.stringify(preClaims),
+    };
+
+    if (history.location.pathname === '/template') {
+      const res: any = await api.offer.create(parms);
+      if (res.code === 200) {
+        message.success('Offered claim');
+        setActiveTabStr('templateList');
+        setTemplateInfo({});
+      }
+    } else {
+      const res: any = await api.offer.patch(templateInfo.claimId, parms);
+      if (res.code === 200) {
+        message.success('Offered claim');
+        setActiveTabStr('claimList');
+        setTemplateInfo({});
+      }
+    }
+  }
 
   return (
     <div className="revocation-con">
@@ -49,107 +140,120 @@ export default function CreateTemplate() {
             <div className="revocation-base-info">
               <div className="info-common-style">
                 <span>Template name:</span>
-                <span>BAYX-Holding-Num-Entry</span>
+                <span>{templateInfo.name}</span>
               </div>
             </div>
             <div className="revocation-base-info">
               <div className="info-common-style">
                 <span>Data Category:</span>
-                <span>NFT</span>
+                <span>{dataCategoryList[Number(templateInfo.dataCategory)]}</span>
               </div>
-              <div className="info-common-style">
-                <span>NFT Contract:</span>
-                <span>0x6d2e83a559c1fbe0cc677d10a22f28f0f8b1f325</span>
-                <span><img
-                  alt=""
-                  src={IconCopy}
-                  onClick={() => copyToClipboard('1')}
-                  className="copyIcon"
-                /></span>
-              </div>
+              {
+                templateInfo.dataCategory === '1' && (
+                  <div className="info-common-style">
+                    <span>NFT Contract:</span>
+                    <span>{templateInfo.subCategory}</span>
+                    <span><img
+                      alt=""
+                      src={IconCopy}
+                      onClick={() => copyToClipboard(templateInfo.subCategory)}
+                      className="copyIcon"
+                    /></span>
+                  </div>
+                )
+              }
+              {
+                templateInfo.dataCategory === '2' && (
+                  <div className="info-common-style">
+                    <span>Space ID:</span>
+                    <span>{templateInfo.subCategory}</span>
+                  </div>
+                )
+              }
             </div>
             <div className="revocation-base-info">
               <div className="info-common-style">
                 <span>Creation Date:</span>
-                <span>21/10/2022</span>
-              </div>
-              <div className="info-common-style">
-                <span>Expirationg Date:</span>
-                <span>31/10/2022</span>
-              </div>
-            </div>
-            <div className="revocation-base-info">
-              <div className="info-common-style">
-                <span>Creation Date:</span>
-                <span>21/10/2022</span>
+                <span>{templateInfo.createdAt.split('T')[0]}</span>
               </div>
               <div className="info-common-style">
                 <span>Expiration Date:</span>
-                <span>31/10/2022</span>
+                <span>{templateInfo.expirationDate}</span>
               </div>
             </div>
             <div className="revocation-base-info">
               <div className="info-common-style">
                 <span>Verification Link:</span>
-                <span>https://dynamic-verification.knn3.xyz/nft-holding/xxxxxxxx</span>
+                <span>{templateInfo.link}</span>
                 <span><img
                   alt=""
                   src={IconCopy}
-                  onClick={() => copyToClipboard('1')}
+                  onClick={() => copyToClipboard(templateInfo.link)}
                   className="copyIcon"
                 /></span>
               </div>
             </div>
           </div>
         </div>
-        <div className="revocation-claims-item">
-          <div className="revocation-form-title">Claims #1</div>
-          <div className="revocation-base-item">
-            <div className="revocation-base-info">
-              <div className="info-common-style">
-                <span>Class name:</span>
-                <span>BAYX-Holding-Num-Entry</span>
+        {classfications.map((item: any, index: number) =>
+          <div className="revocation-claims-item">
+            <div className="revocation-form-title">Claims #1</div>
+            <div className="revocation-base-item">
+              <div className="revocation-base-info">
+                <div className="info-common-style">
+                  <span>Class name:</span>
+                  <span>{item.name}</span>
+                </div>
               </div>
-            </div>
-            <div className="revocation-base-info">
-              <div className="info-common-style">
-                <span>Class Hash:</span>
-                <span>d78......</span>
-                <span><img
-                  alt=""
-                  src={IconCopy}
-                  onClick={() => copyToClipboard('1')}
-                  className="copyIcon"
-                /></span>
+              <div className="revocation-base-info">
+                <div className="info-common-style">
+                  <span>Class Hash:</span>
+                  <span>......</span>
+                  <span><img
+                    alt=""
+                    src={IconCopy}
+                    onClick={() => copyToClipboard('1')}
+                    className="copyIcon"
+                  /></span>
+                </div>
               </div>
-            </div>
-            <div className="revocation-base-info">
-              <div className="info-common-style">
-                <span>Lower Bound:</span>
-                <span>{'>1'}</span>
+              <div className="revocation-base-info">
+                {
+                  item.lowerBoundType[0] === 1 && (
+                    <div className="info-common-style">
+                      <span>Lower Bound:</span>
+                      <span>{item.lowerBoundType[1] === 0 ? '>' : '≥'}{item.lowerBoundType[2]}</span>
+                    </div>
+                  )
+                }
+                {
+                  item.upperBoundType[0] === 1 && (
+                    <div className="info-common-style">
+                      <span>Upper Bound:</span>
+                      <span>{item.upperBoundType[1] === 0 ? '<' : '≤'}{item.upperBoundType[2]}</span>
+                    </div>
+                  )
+                }
               </div>
-              <div className="info-common-style">
-                <span>Upper Bound:</span>
-                <span>{'<5'}</span>
-              </div>
-            </div>
-            <div className="revocation-trigger">
-              <div>
-                Revocation Trigger
-              </div>
-              <div>
-                <Select defaultValue="0" style={{ width: '100%' }} onChange={handleChange}>
-                  <Option value="0">Never</Option>
-                  <Option value="1">The lower bound is unmet</Option>
-                  <Option value="2">The upper bound is unmet</Option>
-                  <Option value="3">Either bound is unmet</Option>
-                </Select>
+              <div className="revocation-trigger">
+                <div>
+                  Revocation Trigger
+                </div>
+                <div>
+                  <Select value={item.triggerValue} style={{ width: '100%' }} onChange={(e) => handleChange(index, e)}>
+                    <Option value="0">Never</Option>
+                    <Option value="1">The lower bound is unmet</Option>
+                    <Option value="2">The upper bound is unmet</Option>
+                    <Option value="3">Either bound is unmet</Option>
+                  </Select>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
+
         <div className="button-group">
-          <div><Button type="primary" size="large" onClick={() => setActiveTabStr('revocation')}>
+          <div><Button type="primary" size="large" onClick={() => finishOffer()}>
             Done
           </Button></div>
         </div>

@@ -80,21 +80,14 @@
   }
 
   .link-url{
-    display: flex;
-
-    >div {
-      flex: 1;
-      height: 60px;
-      line-height: 60px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    }
     >div:nth-child(1) {
       font-size: 24px;
-    }
-    >div:nth-child(2) {
-      text-align: right;
+      height: 60px;
+      line-height: 60px;
     }
   }
+  
   .info-common-style {
     margin-bottom: 14px;
 

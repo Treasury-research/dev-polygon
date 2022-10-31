@@ -4,5 +4,5 @@ export const dataCategoryList = [
   "ENS",
   "NFT",
   "Snapshot",
-  "Lens Protocol(Rank)",
+  "LENS",
 ];

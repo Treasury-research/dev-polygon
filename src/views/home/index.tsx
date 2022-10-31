@@ -22,10 +22,10 @@ export default function Home(props: RouteComponentProps) {
   };
 
   const setComp = (str: string) => {
-    if (str.includes('template')) {
-      setActiveTabStr('templateList')
-    } else {
+    if (str.includes('claim')) {
       setActiveTabStr('claimList')
+    } else {
+      setActiveTabStr('templateList')
     }
   };
 

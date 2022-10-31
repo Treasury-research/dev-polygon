@@ -1,15 +1,15 @@
-.claimList-page {
+.list-page {
   height: 100%;
   width: 100%;
 }
 
-.claimList-title {
+.list-title {
   font-size: 30px;
   color: #fff;
   margin-bottom: 10px;
 }
 
-.claimList-des {
+.list-des {
   margin-bottom: 4px;
   width: 100%;
   overflow: hidden;
@@ -33,13 +33,13 @@
   }
 }
 
-.claimList-btn {
+.list-btn {
   position: absolute;
   right: 60px;
   top: 60px;
 }
 
-.claimList-tabs {
+.list-tabs {
   margin-top: 60px;
   overflow: hidden;
 
@@ -59,7 +59,7 @@
   }
 }
 
-.claimList-table {
+.list-table {
   margin-top: 20px;
   width: 100%;
   height: calc(100% - 100px);
@@ -67,17 +67,17 @@
 }
 
 .tag {
-  width: 100px;
   padding: 3px;
   text-align: center;
   border-radius: 50px;
+  width: 140px;
 }
 
-.claim-offer {
+.revocation {
   display: block;
-  width: 140px;
   background: #000;
-  padding: 3px 0;
+  width: 140px;
+  padding: 3px 0px;
   text-align: center;
   border-radius: 4px;
   color: #fc3200;

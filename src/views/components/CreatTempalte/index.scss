@@ -115,11 +115,17 @@
 
     .template-form-bound-select {
       overflow: hidden;
-
-      >div {
+      >div{
+        overflow: hidden;
+      }
+      >div>div {
         float: left;
+        margin-bottom: 10px;
         width: 25%;
         color: #fff;
+      }
+      >div:nth-child(2){
+        margin-left: 20px;
       }
     }
   }

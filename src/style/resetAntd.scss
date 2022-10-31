@@ -160,3 +160,15 @@ tr.ant-table-expanded-row:hover>td {
 	cursor: pointer;
 	margin-left: 4px;
 }
+
+.ant-checkbox-disabled + span{
+	color: #fff;
+}
+
+.ant-table-tbody > tr.ant-table-placeholder:hover > td{
+	background: #000;
+}
+
+.ant-empty-description{
+	color: rgba(255, 255, 255, 0.5);
+}
