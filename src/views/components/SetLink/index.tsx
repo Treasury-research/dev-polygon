@@ -26,7 +26,7 @@ export default function CreateTemplate() {
 
   useEffect(() => {
     setClassfications(JSON.parse(templateInfo.classfications));
-    if(templateInfo.link) setLink(templateInfo.link);
+    if (templateInfo.link) setLink(templateInfo.link);
   }, []);
 
   const toRevocation = () => {
@@ -125,7 +125,16 @@ export default function CreateTemplate() {
 
         <div className="link-url">
           <div>Verification Link</div>
-          <div><Input placeholder="link" value={link} onChange={e => setLink(e.target.value)} /></div>
+          <div>{templateInfo.link}
+            <span>
+              <img
+                alt=""
+                src={IconCopy}
+                onClick={() => copyToClipboard(templateInfo.link)}
+                className="copyIcon"
+              />
+            </span>
+          </div>
         </div>
         <div className="button-group">
           <div><Button type="primary" size="large" onClick={() => toRevocation()}>

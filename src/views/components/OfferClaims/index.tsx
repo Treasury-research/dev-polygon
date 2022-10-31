@@ -4,9 +4,11 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Checkbox, Input, Button, DatePicker } from 'antd';
 import { moduleActive, templateInfos } from '../../../store/atom';
 import { useRecoilState } from 'recoil';
+import { useHistory } from 'react-router-dom';
 import IconCopy from "./../../../static/img/copy.png";
 import { copyToClipboard } from "./../../../utils/tools";
 import { dataCategoryList } from '../../../config';
+import api from '../../../api';
 import moment from 'moment';
 
 const defaultClassficationItem = {
@@ -27,6 +29,8 @@ export default function CreateTemplate() {
 
   const [expirationDate, setExpirationDate] = useState("2022/10/31")
 
+  const history = useHistory();
+
   const onChange = (index: number, field: string, subIndex: number, value: string) => {
     const reg = /^-?\d*(\.\d*)?$/;
     if (reg.test(value) || value === '' || value === '-') {
@@ -46,16 +50,42 @@ export default function CreateTemplate() {
     setClassfications(classItems);
   }, []);
 
-  const toLink = (() => {
-    setTemplateInfo((prev: any) => {
-      return {
-        ...prev,
-        classfications: JSON.stringify(classfications),
-        expirationDate,
-      }
+  const toLink = async () => {
+    let preClaims: any = [];
+    
+    classfications.map((t: any) => {
+      preClaims.push({
+        name: t.name,
+        datacategory: templateInfo.dataCategory,
+        subcategory: templateInfo.subcategory,
+        lowerBound: t.lowerBoundType, // 是否选择，是否包含 , 具体数值 ,  是否triger
+        upperBound: t.upperBoundType,
+        createDate: templateInfo.createdAt,
+        expirationDate: templateInfo.expirationDate, // 过期时间
+      })
     })
-    setActiveTabStr('setLink');
-  })
+
+    let parms: object = {
+      name: templateInfo.name,
+      template: templateInfo.id,
+      preClaims: JSON.stringify(preClaims),
+    };
+
+    const res: any = await api.offer.create(parms);
+
+    if (res.code === 200) {
+      setTemplateInfo((prev: any) => {
+        return {
+          ...prev,
+          classfications: JSON.stringify(classfications),
+          expirationDate,
+          link:`${window.location.host}/page/${res.result.id}`,
+          claimId:res.result.id
+        }
+      })
+      setActiveTabStr('setLink');
+    }
+  }
 
   return (
     <div className="claim-con">

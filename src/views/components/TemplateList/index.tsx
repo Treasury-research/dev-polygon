@@ -22,6 +22,7 @@ const DataType = {
 }
 
 export default function List() {
+  
   const [activeTabStr, setActiveTabStr] = useRecoilState(moduleActive);
 
   const [templateList, setTemplateList] = useState([]);

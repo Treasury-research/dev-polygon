@@ -89,7 +89,7 @@ export default function CreateTemplate() {
   };
 
   const fallback = () => {
-    if (history.location.pathname === '/template') {
+    if (history.location.pathname === '/home/template') {
       setActiveTabStr('setLink')
     } else {
       setActiveTabStr('claimList')
@@ -99,7 +99,7 @@ export default function CreateTemplate() {
   const finishOffer = async () => {
 
     let preClaims: any = [];
-    
+
     classfications.map((t: any) => {
       preClaims.push({
         name: t.name,
@@ -118,22 +118,17 @@ export default function CreateTemplate() {
       link: templateInfo.link,
       preClaims: JSON.stringify(preClaims),
     };
-
-    if (history.location.pathname === '/template') {
-      const res: any = await api.offer.create(parms);
+    debugger
+    const res: any = await api.offer.patch(templateInfo.claimId, parms);
       if (res.code === 200) {
         message.success('Offered claim');
-        setActiveTabStr('templateList');
         setTemplateInfo({});
+        if (history.location.pathname === '/home/template'){
+          setActiveTabStr('templateList');
+        }else{
+          setActiveTabStr('claimList');
+        }
       }
-    } else {
-      const res: any = await api.offer.patch(templateInfo.claimId, parms);
-      if (res.code === 200) {
-        message.success('Offered claim');
-        setActiveTabStr('claimList');
-        setTemplateInfo({});
-      }
-    }
   }
 
   return (

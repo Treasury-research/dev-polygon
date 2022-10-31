@@ -28,6 +28,7 @@ const offer = {
   create: async (params?: any) => api.post("/offer", params),
   delete: async (id?: any) => api.delete(`/offer/${id}`),
   patch: async (id?: any, params?: any) => api.patch(`/offer/${id}`, params),
+  getQrCode: async (params?: any) => api.post(`/auth/create`, params),
 };
 
 export default {

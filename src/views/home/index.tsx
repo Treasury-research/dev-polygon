@@ -17,7 +17,7 @@ export default function Home(props: RouteComponentProps) {
   }, []);
 
   const routerTo = (str: string) => {
-    props.history.push(`/${str}`);
+    props.history.push(`/home/${str}`);
     setComp(str);
   };
 
@@ -46,18 +46,18 @@ export default function Home(props: RouteComponentProps) {
           </div>
         </div>
         <div className="page-left-router">
-          <div onClick={() => routerTo('template')} className={props.location.pathname === '/template' || props.location.pathname === '/' ? 'active' : ''}>
+          <div onClick={() => routerTo('template')} className={props.location.pathname === '/home/template' || props.location.pathname === '/home' ? 'active' : ''}>
             Template
           </div>
-          <div onClick={() => routerTo('claim')} className={props.location.pathname === '/claim' ? 'active' : ''}>Claim</div>
+          <div onClick={() => routerTo('claim')} className={props.location.pathname === '/home/claim' ? 'active' : ''}>Claim</div>
         </div>
       </div>
       <div className="page-right-content" key={props.location.key}>
         <Router>
           <Switch>
-            <Route path="/claim" component={Claim} />
-            <Route path="/template" component={Template} />
-            <Redirect to="/template" />
+            <Route path="/home/claim" component={Claim} />
+            <Route path="/home/template" component={Template} />
+            <Redirect to="/home/template" />
           </Switch>
         </Router>
       </div>

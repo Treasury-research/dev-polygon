@@ -19,7 +19,8 @@ const DataType = {
   lowerBound: [0, 0],
   upperBound: [0, 0],
   createdAt: '',
-  description: ''
+  description: '',
+  link: ''
 }
 
 
@@ -109,6 +110,7 @@ export default function List() {
         t.subCategory = record.template.subCategory;
         t.templateName = record.template.name;
         t.description = templateClass[i]['description'];
+        t.link = record.link;
       })
       renderData = [...expandData];
     } else {
@@ -236,6 +238,16 @@ export default function List() {
               alt=""
               src={IconCopy}
               onClick={() => copyToClipboard(drawerRecords.description)}
+              className="copyIcon"
+            /></span>
+          </div>
+          <div>
+            <span>Link:</span>
+            <span>{drawerRecords.link}</span>
+            <span><img
+              alt=""
+              src={IconCopy}
+              onClick={() => copyToClipboard(drawerRecords.link)}
               className="copyIcon"
             /></span>
           </div>
