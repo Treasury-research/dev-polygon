@@ -30,10 +30,6 @@ export default function CreateTemplate() {
 
   const history = useHistory();
 
-  const onChange = (e: any) => {
-    console.log(`checked = ${e.target.checked}`);
-  };
-
   useEffect(() => {
     let classItems: any = JSON.parse(templateInfo.classfications);
     classItems.map((t: any) => {
@@ -60,7 +56,6 @@ export default function CreateTemplate() {
         }
       }
     })
-    debugger
     setClassfications(classItems);
   }, []);
 
@@ -104,7 +99,7 @@ export default function CreateTemplate() {
   const finishOffer = async () => {
 
     let preClaims: any = [];
-    debugger
+    
     classfications.map((t: any) => {
       preClaims.push({
         name: t.name,

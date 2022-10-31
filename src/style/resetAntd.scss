@@ -172,3 +172,15 @@ tr.ant-table-expanded-row:hover>td {
 .ant-empty-description{
 	color: rgba(255, 255, 255, 0.5);
 }
+
+.ant-picker{
+	background: #1a1a1a;
+	border-color: rgba(255, 255, 255, 0.1);
+}
+.ant-picker-clear, .ant-picker-suffix{
+	display: none;
+}
+
+.ant-picker-input input{
+	color: rgba(255, 255, 255, 0.7);
+}

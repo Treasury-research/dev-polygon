@@ -3,8 +3,8 @@ import './index.scss';
 import api from '../../../api';
 import { Button } from 'antd';
 import { dataCategoryList } from '../../../config'
-import { PlusOutlined, DownOutlined } from '@ant-design/icons';
-import { Badge, Table, Drawer } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { Table, Drawer } from 'antd';
 import { moduleActive, templateInfos } from '../../../store/atom';
 import { useRecoilState } from 'recoil';
 import IconCopy from "./../../../static/img/copy.png";
@@ -20,7 +20,6 @@ const DataType = {
   createdAt: '',
   description: ''
 }
-// dataCategory subCategory  lowerBoundType upperBoundType createdAt description
 
 export default function List() {
   const [activeTabStr, setActiveTabStr] = useRecoilState(moduleActive);
@@ -120,15 +119,6 @@ export default function List() {
           Create Template
         </Button>
       </div>
-      {/* <div className="list-tabs">
-        {tabs.map((item, index) => (
-          <div key={item.value} className={(index === activeTabVal ? 'active' : '')} onClick={() => setActiveTabVal(index)}>
-            <span>
-              {item.name}
-            </span>
-          </div>
-        ))}
-      </div> */}
       <div className="list-table">
         <Table
           rowKey="id"
@@ -200,30 +190,6 @@ export default function List() {
             <span>Description:</span>
             <span>{drawerRecords.description}</span>
           </div>
-          {/* <div>
-            <span>Class Hash:</span>
-            <span>...</span>
-            <span><img
-              alt=""
-              src={IconCopy}
-              onClick={() => copyToClipboard('...')}
-              className="copyIcon"
-            /></span>
-          </div>
-          <div>
-            <span>Description:</span>
-            <span>{drawerRecords.description}</span>
-          </div> */}
-          {/* <div>
-            <span>Class URL:</span>
-            <span>https://s.3.eu-wesr-1....</span>
-            <span><img
-              alt=""
-              src={IconCopy}
-              onClick={() => copyToClipboard(drawerRecords.description)}
-              className="copyIcon"
-            /></span>
-          </div> */}
         </div>
       </Drawer>
     </div>

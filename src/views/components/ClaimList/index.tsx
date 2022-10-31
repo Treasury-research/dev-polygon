@@ -60,7 +60,7 @@ export default function List() {
 
   const setRevocation = (record: any) => {
     let classfications = JSON.parse(record.preClaims);
-    classfications.map((t:any, i:number) => {
+    classfications.map((t: any, i: number) => {
       t.lowerBoundType = t.lowerBound;
       t.upperBoundType = t.upperBound;
     })
@@ -103,7 +103,7 @@ export default function List() {
     if (record.preClaims) {
       let expandData = JSON.parse(record.preClaims);
       let templateClass = JSON.parse(record.template.classfications);
-      expandData.map((t: any, i:number) => {
+      expandData.map((t: any, i: number) => {
         t.createdAt = record.createdAt;
         t.dataCategory = record.dataCategory;
         t.subCategory = record.template.subCategory;
@@ -150,15 +150,6 @@ export default function List() {
           {claimList.length} Bundles
         </div>
       </div>
-      {/* <div className="list-tabs">
-        {tabs.map((item, index) => (
-          <div key={item.value} className={(index === activeTabVal ? 'active' : '')} onClick={() => setActiveTabVal(index)}>
-            <span>
-              {item.name}
-            </span>
-          </div>
-        ))}
-      </div> */}
       <div className="list-table">
         <Table
           rowKey="id"

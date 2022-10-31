@@ -24,7 +24,6 @@ export default function CreateTemplate() {
 
   const [templateName, setTemplateName] = useState("");
 
-  const [clasifications, setClassifications] = useState<any>([defaultClassficationItem])
   const [classfications, setClassfications] = useState<any>([defaultClassficationItem])
 
   const [dataCategory, setDataCategory] = useState('0');

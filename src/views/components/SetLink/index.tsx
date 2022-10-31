@@ -24,10 +24,6 @@ export default function CreateTemplate() {
 
   const [link, setLink] = useState("");
 
-  const onChange = (e: any) => {
-    console.log(`checked = ${e.target.checked}`);
-  };
-
   useEffect(() => {
     setClassfications(JSON.parse(templateInfo.classfications));
     if(templateInfo.link) setLink(templateInfo.link);
@@ -35,10 +31,6 @@ export default function CreateTemplate() {
 
   const toRevocation = () => {
     setTemplateInfo((prev: any) => {
-      console.log({
-        ...prev,
-        link
-      })
       return {
         ...prev,
         link
