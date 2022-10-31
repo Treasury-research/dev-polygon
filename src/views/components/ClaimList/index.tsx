@@ -59,11 +59,17 @@ export default function List() {
   };
 
   const setRevocation = (record: any) => {
+    let classfications = JSON.parse(record.preClaims);
+    classfications.map((t:any, i:number) => {
+      t.lowerBoundType = t.lowerBound;
+      t.upperBoundType = t.upperBound;
+    })
     setTemplateInfo({
       ...record.template,
       link: record.link,
       claimId: record.id,
-      expirationDate: JSON.parse(record.preClaims)[0]['expirationDate']
+      expirationDate: JSON.parse(record.preClaims)[0]['expirationDate'],
+      classfications: JSON.stringify(classfications)
     });
     setActiveTabStr('revocation');
   }
@@ -96,11 +102,13 @@ export default function List() {
 
     if (record.preClaims) {
       let expandData = JSON.parse(record.preClaims);
-      expandData.map((t: any) => {
+      let templateClass = JSON.parse(record.template.classfications);
+      expandData.map((t: any, i:number) => {
         t.createdAt = record.createdAt;
         t.dataCategory = record.dataCategory;
         t.subCategory = record.template.subCategory;
         t.templateName = record.template.name;
+        t.description = templateClass[i]['description'];
       })
       renderData = [...expandData];
     } else {
@@ -210,11 +218,11 @@ export default function List() {
           }
           <div>
             <span>Lower Bound:</span>
-            <span>{drawerRecords.lowerBound[0] === 0 ? '--' : drawerRecords.lowerBound[1] === 1 ? '≥' : '>'}{drawerRecords.lowerBound[3]}</span>
+            <span>{drawerRecords.lowerBound[0] === 0 ? '--' : drawerRecords.lowerBound[1] === 1 ? '≥' : '>'}{drawerRecords.lowerBound[2]}</span>
           </div>
           <div>
             <span>Upper Bound:</span>
-            <span>{drawerRecords.upperBound[0] === 0 ? '--' : drawerRecords.upperBound[1] === 1 ? '≤' : '<'}{drawerRecords.lowerBound[3]}</span>
+            <span>{drawerRecords.upperBound[0] === 0 ? '--' : drawerRecords.upperBound[1] === 1 ? '≤' : '<'}{drawerRecords.upperBound[2]}</span>
           </div>
           <div>
             <span>Creation Date:</span>

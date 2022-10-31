@@ -217,7 +217,7 @@ export default function CreateTemplate() {
         <div className="add-class" onClick={addTemplate}><span>+</span> Add Class (no intersection)</div>
         <div className="date-check">
           <div>
-            <Checkbox checked={isExpirable} onChange={e => setIsExpirable(e.target.value)}><span className="check-des">Mandatory claim expiration date (Optional)</span></Checkbox>
+            <Checkbox checked={isExpirable} onChange={e => setIsExpirable(e.target.checked)}><span className="check-des">Mandatory claim expiration date (Optional)</span></Checkbox>
           </div>
           <div>
             <div className="date-des">When offering a claim,there will be a requirement to fill the expiration date.</div>

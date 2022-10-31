@@ -37,10 +37,30 @@ export default function CreateTemplate() {
   useEffect(() => {
     let classItems: any = JSON.parse(templateInfo.classfications);
     classItems.map((t: any) => {
-      t.lowerBoundType[3] = 1;
-      t.upperBoundType[3] = 1;
-      t.triggerValue = '0';
+      if (!t.lowerBoundType[3] && t.lowerBoundType[3] !== 0) {
+        t.lowerBoundType[3] = 1;
+        t.upperBoundType[3] = 1;
+        t.triggerValue = '0';
+      } else {
+        if (t.lowerBoundType[3] === 1 &&
+          t.upperBoundType[3] === 1) {
+          t.triggerValue = '0';
+        }
+        if (t.lowerBoundType[3] === 0 &&
+          t.upperBoundType[3] === 1) {
+          t.triggerValue = '1';
+        }
+        if (t.lowerBoundType[3] === 1 &&
+          t.upperBoundType[3] === 0) {
+          t.triggerValue = '2';
+        }
+        if (t.lowerBoundType[3] === 0 &&
+          t.upperBoundType[3] === 0) {
+          t.triggerValue = '3';
+        }
+      }
     })
+    debugger
     setClassfications(classItems);
   }, []);
 
@@ -84,7 +104,7 @@ export default function CreateTemplate() {
   const finishOffer = async () => {
 
     let preClaims: any = [];
-
+    debugger
     classfications.map((t: any) => {
       preClaims.push({
         name: t.name,
@@ -197,7 +217,7 @@ export default function CreateTemplate() {
         </div>
         {classfications.map((item: any, index: number) =>
           <div className="revocation-claims-item" key={index}>
-            <div className="revocation-form-title">Claims #1</div>
+            <div className="revocation-form-title">Claims #{index + 1}</div>
             <div className="revocation-base-item">
               <div className="revocation-base-info">
                 <div className="info-common-style">
