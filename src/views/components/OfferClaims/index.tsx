@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './index.scss';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { Checkbox, Input, Button, DatePicker } from 'antd';
+import { Checkbox, Input, Button, DatePicker, message } from 'antd';
 import { moduleActive, templateInfos } from '../../../store/atom';
 import { useRecoilState } from 'recoil';
 import { useHistory } from 'react-router-dom';
@@ -35,7 +35,7 @@ export default function CreateTemplate() {
     const reg = /^-?\d*(\.\d*)?$/;
     if (reg.test(value) || value === '' || value === '-') {
       setClassfications((prev: any) => {
-        prev[index][field][subIndex] = value;
+        prev[index][field][subIndex] = Number(value);
         return [...prev]
       })
     }
@@ -52,8 +52,17 @@ export default function CreateTemplate() {
 
   const toLink = async () => {
     let preClaims: any = [];
-    
+    let errorMsg: string = "";
+
     classfications.map((t: any) => {
+      if ((t.lowerBoundType[0] === 1 && t.lowerBoundType[2] === null) || 
+      (t.upperBoundType[0] === 1 && t.upperBoundType[2] === null)) {
+        errorMsg = 'Please fill in all values';
+      } else if (t.lowerBoundType[0] === 1 && t.upperBoundType[0] === 1) {
+        if (t.lowerBoundType[2] >= t.upperBoundType[2]) {
+          errorMsg = 'The upper bound must be greater than the lower bound';
+        }
+      }
       preClaims.push({
         name: t.name,
         datacategory: templateInfo.dataCategory,
@@ -64,26 +73,29 @@ export default function CreateTemplate() {
         expirationDate: templateInfo.expirationDate, // 过期时间
       })
     })
+    if (errorMsg) {
+      message.error(errorMsg);
+    } else {
+      let parms: object = {
+        name: templateInfo.name,
+        template: templateInfo.id,
+        preClaims: JSON.stringify(preClaims),
+      };
 
-    let parms: object = {
-      name: templateInfo.name,
-      template: templateInfo.id,
-      preClaims: JSON.stringify(preClaims),
-    };
+      const res: any = await api.offer.create(parms);
 
-    const res: any = await api.offer.create(parms);
-
-    if (res.code === 200) {
-      setTemplateInfo((prev: any) => {
-        return {
-          ...prev,
-          classfications: JSON.stringify(classfications),
-          expirationDate,
-          link:`${window.location.host}/page/${res.result.id}`,
-          claimId:res.result.id
-        }
-      })
-      setActiveTabStr('setLink');
+      if (res.code === 200) {
+        setTemplateInfo((prev: any) => {
+          return {
+            ...prev,
+            classfications: JSON.stringify(classfications),
+            expirationDate,
+            link: `${window.location.href.split('/home/template')[0]}/page/${res.result.id}`,
+            claimId: res.result.id
+          }
+        })
+        setActiveTabStr('setLink');
+      }
     }
   }
 

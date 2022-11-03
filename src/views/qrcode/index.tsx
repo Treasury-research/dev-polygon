@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './index.scss';
 import { RouteComponentProps } from 'react-router-dom';
+import QrImg from "./../../static/img/QR_ready.png";
+import { Button } from 'antd';
+import QRCode  from 'qrcode.react';
+import { copyToClipboard } from "./../../utils/tools";
 import api from '../../api';
 
 export default function QrCode(props: RouteComponentProps) {
@@ -17,8 +21,26 @@ export default function QrCode(props: RouteComponentProps) {
   }, []);
 
   return (
-    <div>
-      {jsonData}
+    <div className='qr'>
+      <div>
+        <img
+          alt=""
+          src={QrImg}
+        />
+      </div>
+      <div className='title1'>You received a claim offer from arc</div>
+      <div>
+        {
+          jsonData && <QRCode value={jsonData} size={128} />
+        }
+        
+      </div>
+      <div className='btn'>
+        <Button type="primary" size="large" onClick={() => copyToClipboard(jsonData)}>
+          Copy
+        </Button>
+      </div>
+      <div className='title2'>Click the QR code to add the chaim to your wallet</div>
     </div>
   );
 }
