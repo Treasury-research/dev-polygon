@@ -150,7 +150,7 @@ export default function CreateTemplate() {
           (<div className="template-form-input-item">
             <div>NFT Contract</div>
             <div>
-              <Input placeholder="Enter Nft contract" value={subCategory} onChange={e => setSubCategory(e.target.value)} />
+              <Input placeholder="Enter NFT Contract" value={subCategory} onChange={e => setSubCategory(e.target.value)} />
             </div>
           </div>
           )}

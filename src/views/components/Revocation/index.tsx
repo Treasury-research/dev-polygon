@@ -99,12 +99,11 @@ export default function CreateTemplate() {
   const finishOffer = async () => {
 
     let preClaims: any = [];
-
     classfications.map((t: any) => {
       preClaims.push({
         name: t.name,
         datacategory: templateInfo.dataCategory,
-        subcategory: templateInfo.subcategory,
+        subcategory: templateInfo.subCategory,
         lowerBound: t.lowerBoundType, // 是否选择，是否包含 , 具体数值 ,  是否triger
         upperBound: t.upperBoundType,
         createDate: templateInfo.createdAt,
@@ -118,7 +117,7 @@ export default function CreateTemplate() {
       link: templateInfo.link,
       preClaims: JSON.stringify(preClaims),
     };
-    debugger
+
     const res: any = await api.offer.patch(templateInfo.claimId, parms);
       if (res.code === 200) {
         message.success('Offered claim');

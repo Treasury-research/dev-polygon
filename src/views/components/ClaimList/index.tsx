@@ -41,7 +41,6 @@ export default function List() {
     res?.result?.data.map((t: any) => {
       t.dataCategory = t.template.dataCategory
     })
-    console.log(res?.result?.data)
     setClaimList(res?.result?.data);
   };
 
@@ -94,8 +93,8 @@ export default function List() {
 
     const columns = [
       { title: 'Claim Name', dataIndex: 'name', key: 'name', render: (text: string, record: any) => <span className="templateName" onClick={() => showDrawer(record)}>{text}</span> },
-      { title: 'Lower Bound', dataIndex: 'lowerBound', key: 'lowerBound', render: (text: any) => text && text.length > 0 ? <span>{text[0] === 1 && ">"}{text[1] === 1 && '='}{text[2]}</span> : '--' },
-      { title: 'Upper Bound', dataIndex: 'upperBound', key: 'upperBound', render: (text: any) => text && text.length > 0 ? <span>{text[0] === 1 && "<"}{text[1] === 1 && '='}{text[2]}</span> : '--' },
+      { title: 'Lower Bound', dataIndex: 'lowerBound', key: 'lowerBound', render: (text: any) => text && text.length > 0 ? <span>{text[0] === 1 && ">"}{text[1] === 1 && '='}{text[2]}{text[0] === 0 && '--'}</span> : '--' },
+      { title: 'Upper Bound', dataIndex: 'upperBound', key: 'upperBound', render: (text: any) => text && text.length > 0 ? <span>{text[0] === 1 && "<"}{text[1] === 1 && '='}{text[2]}{text[0] === 0 && '--'}</span> : '--' },
       { title: 'Revocation Trigger', dataIndex: 'description', key: 'description', render: (text: string, record: any) => <span>{getTrigger(record.lowerBound[3], record.upperBound[3])}</span> },
     ];
 
@@ -107,11 +106,12 @@ export default function List() {
       expandData.map((t: any, i: number) => {
         t.createdAt = record.createdAt;
         t.dataCategory = record.dataCategory;
-        t.subCategory = record.template.subCategory;
+        t.subCategory = t.subcategory ? t.subcategory : record.template.subCategory;
         t.templateName = record.template.name;
         t.description = templateClass[i]['description'];
         t.link = record.link;
       })
+      console.log(expandData)
       renderData = [...expandData];
     } else {
       renderData = []
@@ -185,7 +185,7 @@ export default function List() {
             drawerRecords.dataCategory === '1' && (
               <div>
                 <span>NFT Contract:</span>
-                <span>{drawerRecords.subCategory}</span>
+                <span>{drawerRecords.subCategory || "--"}</span>
                 <span><img
                   alt=""
                   src={IconCopy}
@@ -199,7 +199,7 @@ export default function List() {
             drawerRecords.dataCategory === '2' && (
               <div>
                 <span>Space ID:</span>
-                <span>{drawerRecords.subCategory}</span>
+                <span>{drawerRecords.subCategory || "--"}</span>
                 <span><img
                   alt=""
                   src={IconCopy}

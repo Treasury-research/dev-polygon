@@ -27,7 +27,9 @@ export default function CreateTemplate() {
 
   const [classfications, setClassfications] = useState<any>([defaultClassficationItem])
 
-  const [expirationDate, setExpirationDate] = useState("2022/10/31")
+  const [expirationDate, setExpirationDate] = useState("2022/11/15")
+
+  const [subCategory, setSubCategory] = useState("")
 
   const history = useHistory();
 
@@ -44,38 +46,74 @@ export default function CreateTemplate() {
   useEffect(() => {
     let classItems: any = JSON.parse(templateInfo.classfications);
     classItems.map((t: any) => {
+      t.upperBoundType[0] = 1;
       t.lowerBoundType[2] = t.lowerBoundType[2] == undefined ? null : t.lowerBoundType[2];
       t.upperBoundType[2] = t.upperBoundType[2] == undefined ? null : t.upperBoundType[2];
     })
     setClassfications(classItems);
   }, []);
 
+  const isIntersect = (arr1: any, arr2: any, isContain: any) => {
+    let start = [Math.min(...arr1), Math.min(...arr2)];//区间的两个最小值
+    let end = [Math.max(...arr1), Math.max(...arr2)];//区间的两个最大值
+    // console.log(Math.max(...start) < Math.min(...end))
+    if (isContain == 0) {
+      return Math.max(...start) < Math.min(...end);//最大值里的最小值 是否 小于等于 最大值的最小值
+    } else {
+      return Math.max(...start) <= Math.min(...end);//最大值里的最小值 是否 小于等于 最大值的最小值
+    }
+
+  }
+
+  const onSubChange = (e:any) => {
+    setSubCategory(e);
+  }
+
   const toLink = async () => {
     let preClaims: any = [];
     let errorMsg: string = "";
 
-    classfications.map((t: any) => {
-      if ((t.lowerBoundType[0] === 1 && t.lowerBoundType[2] === null) || 
-      (t.upperBoundType[0] === 1 && t.upperBoundType[2] === null)) {
+    classfications.map((t: any, i: number) => {
+      if ((t.lowerBoundType[0] === 1 && t.lowerBoundType[2] === null) ||
+        (t.upperBoundType[0] === 1 && t.upperBoundType[2] === null)) {
         errorMsg = 'Please fill in all values';
       } else if (t.lowerBoundType[0] === 1 && t.upperBoundType[0] === 1) {
         if (t.lowerBoundType[2] >= t.upperBoundType[2]) {
           errorMsg = 'The upper bound must be greater than the lower bound';
         }
       }
+
+      classfications.map((r: any, h: number) => {
+        if (i !== h) {
+          if ((t.lowerBoundType[1] == 1 && r.upperBoundType[1] == 1) || (t.upperBoundType[1] == 1 && r.lowerBoundType[1] == 1)) {
+            if(isIntersect([t.lowerBoundType[2] ? t.lowerBoundType[2] : 0, t.upperBoundType[2]],
+              [r.lowerBoundType[2] ? r.lowerBoundType[2] : 0, r.upperBoundType[2]], 1)){
+                errorMsg = 'The classes cannot overlap (even the same number).'
+              }
+          }else{
+            if(isIntersect([t.lowerBoundType[2] ? t.lowerBoundType[2] : 0, t.upperBoundType[2]],
+              [r.lowerBoundType[2] ? r.lowerBoundType[2] : 0, r.upperBoundType[2]], 0)){
+                errorMsg = 'The classes cannot overlap (even the same number).'
+              }
+          }
+        }
+      })
       preClaims.push({
         name: t.name,
         datacategory: templateInfo.dataCategory,
-        subcategory: templateInfo.subcategory,
+        subcategory: templateInfo.subCategory ? templateInfo.subCategory : subCategory,
         lowerBound: t.lowerBoundType, // 是否选择，是否包含 , 具体数值 ,  是否triger
         upperBound: t.upperBoundType,
         createDate: templateInfo.createdAt,
         expirationDate: templateInfo.expirationDate, // 过期时间
       })
+
     })
+
     if (errorMsg) {
       message.error(errorMsg);
     } else {
+
       let parms: object = {
         name: templateInfo.name,
         template: templateInfo.id,
@@ -86,15 +124,21 @@ export default function CreateTemplate() {
 
       if (res.code === 200) {
         setTemplateInfo((prev: any) => {
+          let obj = {...prev};
+          if(subCategory){
+            obj.subCategory = subCategory
+          }
           return {
-            ...prev,
+            ...obj,
             classfications: JSON.stringify(classfications),
             expirationDate,
             link: `${window.location.href.split('/home/template')[0]}/page/${res.result.id}`,
             claimId: res.result.id
           }
         })
+
         setActiveTabStr('setLink');
+
       }
     }
   }
@@ -126,7 +170,7 @@ export default function CreateTemplate() {
               <span>{dataCategoryList[Number(templateInfo.dataCategory)]}</span>
             </div>
             {
-              templateInfo.dataCategory === '1' && (
+              templateInfo.dataCategory === '1' && templateInfo.subCategory && (
                 <div className="info-common-style">
                   <span>NFT Contract:</span>
                   <span>{templateInfo.subCategory}</span>
@@ -140,7 +184,7 @@ export default function CreateTemplate() {
               )
             }
             {
-              templateInfo.dataCategory === '2' && (
+              templateInfo.dataCategory === '2' && templateInfo.subCategory && (
                 <div className="info-common-style">
                   <span>Space ID:</span>
                   <span>{templateInfo.subCategory}</span>
@@ -148,10 +192,30 @@ export default function CreateTemplate() {
               )
             }
           </div>
+          {
+              templateInfo.dataCategory === '1' && !templateInfo.subCategory && (
+                <div>
+                  <div className="info-common-style">
+                    <span>NFT Contract:</span>
+                  </div>
+                  <div><Input value={subCategory} onChange={e => onSubChange(e.target.value)}/></div>
+                </div>
+              )
+          }
+          {
+              templateInfo.dataCategory === '2' && !templateInfo.subCategory && (
+                <div>
+                  <div className="info-common-style">
+                    <span>Space ID:</span>
+                  </div>
+                  <div><Input value={subCategory} onChange={e => onSubChange(e.target.value)}/></div>
+                </div>
+              )
+          }
         </div>
         {classfications.map((item: any, index: number) =>
           <div className="claim-claims-item" key={index}>
-            <div className="claim-form-title">Claims #{index + 1}</div>
+            <div className="claim-form-title">Claim #{index + 1}</div>
             <div className="info-common-style">
               <span>Class Name:</span>
               <span>{item.name}</span>
@@ -175,14 +239,11 @@ export default function CreateTemplate() {
                   <div><Checkbox checked={item.lowerBoundType[1] === 1} disabled>Include lower Bound(≥)</Checkbox></div>
                 </div>
               }
-              {
-                item.upperBoundType[0] === 1 &&
-                <div>
-                  <div>Upper Bound:</div>
-                  <div><Input value={item.upperBoundType[2]} onChange={e => onChange(index, 'upperBoundType', 2, e.target.value)} /></div>
-                  <div><Checkbox checked={item.upperBoundType[1] === 1} disabled>Include Upper Bound(≤)</Checkbox></div>
-                </div>
-              }
+              <div>
+                <div>Upper Bound:</div>
+                <div><Input value={item.upperBoundType[2]} onChange={e => onChange(index, 'upperBoundType', 2, e.target.value)} /></div>
+                <div><Checkbox checked={item.upperBoundType[1] === 1} disabled>Include Upper Bound(≤)</Checkbox></div>
+              </div>
             </div>
           </div>
         )}

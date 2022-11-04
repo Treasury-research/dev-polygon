@@ -13,7 +13,7 @@ import { copyToClipboard } from "./../../../utils/tools";
 const DataType = {
   name: '',
   templateName: '',
-  dataCategory: 0,
+  dataCategory: '0',
   subCategory: '',
   lowerBoundType: [0,0],
   upperBoundType: [0,0],
@@ -59,8 +59,8 @@ export default function List() {
   const expandedRowRender = (record: any, index: number) => {
     const columns = [
       { title: 'Class Name', dataIndex: 'name', key: 'name', render: (text: string, record: any) => <span className="templateName" onClick={() => showDrawer(record)}>{text}</span> },
-      { title: 'Lower Bound', dataIndex: 'lowerBoundType', key: 'lowerBoundType', render: (text: any) => text && text.length > 0 ? <span>{text[0] === 1 && ">"}{text[1] === 1 && '='}</span> : '--' },
-      { title: 'Upper Bound', dataIndex: 'upperBoundType', key: 'upperBoundType', render: (text: any) => text && text.length > 0 ? <span>{text[0] === 1 && "<"}{text[1] === 1 && '='}</span> : '--' },
+      { title: 'Lower Bound', dataIndex: 'lowerBoundType', key: 'lowerBoundType', render: (text: any) => text && text.length > 0 ? <span>{text[0] === 1 && ">"}{text[1] === 1 && '='}{text[0] === 0 && "--"}</span> : <span>--</span> },
+      { title: 'Upper Bound', dataIndex: 'upperBoundType', key: 'upperBoundType', render: (text: any) => text && text.length > 0 ? <span>{text[0] === 1 && "<"}{text[1] === 1 && '='}{text[0] === 0 && "--"}</span> : <span>--</span> },
       { title: 'Description', dataIndex: 'description', key: 'description' },
     ];
 
@@ -147,12 +147,12 @@ export default function List() {
           </div>
           <div>
             <span>Data Category:</span>
-            <span>{dataCategoryList[drawerRecords?.dataCategory]}</span>
+            <span>{dataCategoryList[Number(drawerRecords?.dataCategory)]}</span>
           </div>
           {
-            drawerRecords.dataCategory === 1 &&  <div>
+            drawerRecords.dataCategory === '1' &&  <div>
               <span>NFT Contract:</span>
-              <span>{drawerRecords.subCategory}</span>
+              <span>{drawerRecords.subCategory || '--'}</span>
               <span><img
                 alt=""
                 src={IconCopy}
@@ -163,9 +163,9 @@ export default function List() {
           }
 
           {
-            drawerRecords.dataCategory === 2 &&  <div>
+            drawerRecords.dataCategory == '2' &&  <div>
               <span>Space ID:</span>
-              <span>{drawerRecords.subCategory}</span>
+              <span>{drawerRecords.subCategory || '--'}</span>
               <span><img
                 alt=""
                 src={IconCopy}

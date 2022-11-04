@@ -40,7 +40,7 @@ export default function QrCode(props: RouteComponentProps) {
           Copy
         </Button>
       </div>
-      <div className='title2'>Click the QR code to add the chaim to your wallet</div>
+      <div className='title2'>Scan the QR code to add the chaim to your wallet</div>
     </div>
   );
 }
