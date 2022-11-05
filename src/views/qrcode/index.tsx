@@ -31,7 +31,7 @@ export default function QrCode(props: RouteComponentProps) {
       <div className='title1'>You received a claim offer from arc</div>
       <div>
         {
-          jsonData && <QRCode value={jsonData} size={128} />
+          jsonData && <QRCode value={jsonData} size={256} />
         }
         
       </div>

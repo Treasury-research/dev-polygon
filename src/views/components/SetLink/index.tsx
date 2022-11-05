@@ -92,14 +92,10 @@ export default function CreateTemplate() {
                 }
               </div>
               <div className="link-base-info">
-                {
-                  item.lowerBoundType[0] === 1 && (
-                    <div className="info-common-style">
-                      <span>Lower Bound:</span>
-                      <span>{item.lowerBoundType[1] === 0 ? '>' : '≥'}{item.lowerBoundType[2]}</span>
-                    </div>
-                  )
-                }
+                <div className="info-common-style">
+                  <span>Lower Bound:</span>
+                  <span>{item.lowerBoundType[1] === 0 ? '>' : '≥'}{item.lowerBoundType[2]}</span>
+                </div>
                 {
                   item.upperBoundType[0] === 1 && (
                     <div className="info-common-style">
@@ -112,7 +108,7 @@ export default function CreateTemplate() {
               <div className="link-base-info">
                 <div className="info-common-style">
                   <span>Creation Date:</span>
-                  <span>{templateInfo.createdAt.split('T')[0]}</span>
+                  <span>{templateInfo.createdAt ? templateInfo.createdAt.split('T')[0] : '--'}</span>
                 </div>
                 <div className="info-common-style">
                   <span>Expiration Date:</span>

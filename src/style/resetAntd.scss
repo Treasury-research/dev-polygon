@@ -68,9 +68,12 @@ tr.ant-table-expanded-row:hover>td {
 }
 
 .ant-table-expanded-row table {
-	margin-left: 35px;
-	width: calc(100% - 35px);
+	margin-left: 5%;
+    width: 95%;
+}
 
+.ant-table-expanded-row tbody tr{
+	cursor: pointer;
 }
 
 .ant-input {
@@ -83,6 +86,11 @@ tr.ant-table-expanded-row:hover>td {
 
 .ant-select-dropdown {
 	background: #1a1a1a;
+}
+
+.ant-input-disabled{
+	background: #1a1a1a !important;
+    color: #fff !important;
 }
 
 .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {

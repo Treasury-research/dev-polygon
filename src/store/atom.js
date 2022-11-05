@@ -16,3 +16,8 @@ export const activeDrawerState = atom({
     
   }
 })
+
+export const routerNm = atom({
+  key: "routerNm",
+  default: '', // 'templateList','claimList','claimList','creatTempalte','offerClaims','setLink','revocation'
+});

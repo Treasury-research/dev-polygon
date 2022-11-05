@@ -4,20 +4,31 @@ import Logo from '../../static/img/logo.png';
 import Claim from './../claim';
 import Template from './../template';
 import { BrowserRouter as Router, Switch, Route, Redirect, Link } from 'react-router-dom';
-import { RouteComponentProps } from 'react-router-dom';
-import { moduleActive } from '../../store/atom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
+import { moduleActive,routerNm } from '../../store/atom';
 import { useRecoilState } from 'recoil';
 
-export default function Home(props: RouteComponentProps) {
+export default function Home() {
 
   const [activeTabStr, setActiveTabStr] = useRecoilState(moduleActive);
 
+  const [routerName, setRouterName] = useRecoilState<any>(routerNm);
+
+  const history = useHistory();
+
   useEffect(() => {
-    setComp(props.location.pathname);
-  }, []);
+    setComp(history.location.pathname);
+  }, [history.location.pathname]);
+
+  useEffect(() => {
+    if(routerName === 'claim'){
+      history.push(`/home/claim`);
+      setRouterName('');
+    }
+  }, [routerName]);
 
   const routerTo = (str: string) => {
-    props.history.push(`/home/${str}`);
+    history.push(`/home/${str}`);
     setComp(str);
   };
 
@@ -46,13 +57,13 @@ export default function Home(props: RouteComponentProps) {
           </div>
         </div>
         <div className="page-left-router">
-          <div onClick={() => routerTo('template')} className={props.location.pathname === '/home/template' || props.location.pathname === '/home' ? 'active' : ''}>
+          <div onClick={() => routerTo('template')} className={history.location.pathname === '/home/template' || history.location.pathname === '/home' ? 'active' : ''}>
             Template
           </div>
-          <div onClick={() => routerTo('claim')} className={props.location.pathname === '/home/claim' ? 'active' : ''}>Claim</div>
+          <div onClick={() => routerTo('claim')} className={history.location.pathname === '/home/claim' ? 'active' : ''}>Claim</div>
         </div>
       </div>
-      <div className="page-right-content" key={props.location.key}>
+      <div className="page-right-content" key={history.location.key}>
         <Router>
           <Switch>
             <Route path="/home/claim" component={Claim} />

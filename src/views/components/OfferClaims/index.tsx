@@ -27,7 +27,7 @@ export default function CreateTemplate() {
 
   const [classfications, setClassfications] = useState<any>([defaultClassficationItem])
 
-  const [expirationDate, setExpirationDate] = useState("2022/11/15")
+  const [expirationDate, setExpirationDate] = useState("")
 
   const [subCategory, setSubCategory] = useState("")
 
@@ -46,34 +46,54 @@ export default function CreateTemplate() {
   useEffect(() => {
     let classItems: any = JSON.parse(templateInfo.classfications);
     classItems.map((t: any) => {
-      t.upperBoundType[0] = 1;
       t.lowerBoundType[2] = t.lowerBoundType[2] == undefined ? null : t.lowerBoundType[2];
       t.upperBoundType[2] = t.upperBoundType[2] == undefined ? null : t.upperBoundType[2];
+      if (t.lowerBoundType[0] === 0) {
+        t.lowerBoundType[2] = 0
+      }
     })
     setClassfications(classItems);
   }, []);
 
+  const maxArrObj = (arr: any, key: any) => {
+    return Math.max.apply(Math, arr.map((o: any) => {
+      return o[key]
+    }));
+  }
+
   const isIntersect = (arr1: any, arr2: any, isContain: any) => {
     let start = [Math.min(...arr1), Math.min(...arr2)];//区间的两个最小值
     let end = [Math.max(...arr1), Math.max(...arr2)];//区间的两个最大值
-    // console.log(Math.max(...start) < Math.min(...end))
     if (isContain == 0) {
       return Math.max(...start) < Math.min(...end);//最大值里的最小值 是否 小于等于 最大值的最小值
     } else {
       return Math.max(...start) <= Math.min(...end);//最大值里的最小值 是否 小于等于 最大值的最小值
     }
-
   }
 
-  const onSubChange = (e:any) => {
+  const onSubChange = (e: any) => {
     setSubCategory(e);
   }
 
   const toLink = async () => {
     let preClaims: any = [];
     let errorMsg: string = "";
+    let isClassError: boolean = false;
+    let upperBoundValue: any = [];
+    // let maxObj: any = {
+    //   value: 0,
+    //   isbH: 0
+    // };
 
     classfications.map((t: any, i: number) => {
+
+      // if (t.lowerBoundType[2] > maxObj.value) {
+      //   maxObj = {
+      //     value: t.lowerBoundType[2],
+      //     isbH: t.lowerBoundType[1]
+      //   }
+      // }
+
       if ((t.lowerBoundType[0] === 1 && t.lowerBoundType[2] === null) ||
         (t.upperBoundType[0] === 1 && t.upperBoundType[2] === null)) {
         errorMsg = 'Please fill in all values';
@@ -85,19 +105,64 @@ export default function CreateTemplate() {
 
       classfications.map((r: any, h: number) => {
         if (i !== h) {
-          if ((t.lowerBoundType[1] == 1 && r.upperBoundType[1] == 1) || (t.upperBoundType[1] == 1 && r.lowerBoundType[1] == 1)) {
-            if(isIntersect([t.lowerBoundType[2] ? t.lowerBoundType[2] : 0, t.upperBoundType[2]],
-              [r.lowerBoundType[2] ? r.lowerBoundType[2] : 0, r.upperBoundType[2]], 1)){
-                errorMsg = 'The classes cannot overlap (even the same number).'
+          if (t.upperBoundType[0] == 1 && r.upperBoundType[0] == 1) {
+            const s = [t.lowerBoundType[2], t.upperBoundType[2]];
+            const e = [r.lowerBoundType[2], r.upperBoundType[2]];
+            const b = t.lowerBoundType[1], h = t.upperBoundType[1],
+              y = r.lowerBoundType[1], o = r.upperBoundType[1];
+            const sMax = Math.max(...s), sMin = Math.min(...s);
+            const eMax = Math.max(...e), eMin = Math.min(...e);
+            if (sMax <= eMin) {
+              if ((h == 1 && y == 1)) {
+                if (isIntersect(s, e, 1)) {
+                  isClassError = true;
+                }
               }
-          }else{
-            if(isIntersect([t.lowerBoundType[2] ? t.lowerBoundType[2] : 0, t.upperBoundType[2]],
-              [r.lowerBoundType[2] ? r.lowerBoundType[2] : 0, r.upperBoundType[2]], 0)){
-                errorMsg = 'The classes cannot overlap (even the same number).'
+              if ((h == 0 && y == 0)) {
+                if (isIntersect(s, e, 0)) {
+                  isClassError = true;
+                }
               }
+              if ((h == 0 && y == 1) || (h == 1 && y == 0)) {
+                if (isIntersect(s, e, 0)) {
+                  isClassError = true;
+                }
+              }
+            } else if (eMax <= sMin) {
+              if ((o == 1 && b == 1)) {
+                if (isIntersect(s, e, 1)) {
+                  isClassError = true;
+                }
+              }
+              if ((o == 0 && b == 0)) {
+                if (isIntersect(s, e, 0)) {
+                  isClassError = true;
+                }
+              }
+              if ((o == 0 && b == 1) || (o == 1 && b == 0)) {
+                if (isIntersect(s, e, 0)) {
+                  isClassError = true;
+                }
+              }
+            } else {
+              if (isIntersect(s, e, 0)) {
+                isClassError = true;
+              }
+            }
           }
         }
       })
+
+      upperBoundValue.push({
+        value: t.upperBoundType[2],
+        isbH: t.upperBoundType[1]
+      })
+
+      if (t.lowerBoundType.length == 3 && t.upperBoundType.length == 3) {
+        t.lowerBoundType.push(0);
+        t.upperBoundType.push(0);
+      }
+
       preClaims.push({
         name: t.name,
         datacategory: templateInfo.dataCategory,
@@ -112,41 +177,61 @@ export default function CreateTemplate() {
 
     if (errorMsg) {
       message.error(errorMsg);
-    } else {
+      return false;
+    }
 
-      let parms: object = {
-        name: templateInfo.name,
-        template: templateInfo.id,
-        preClaims: JSON.stringify(preClaims),
-      };
+    if (isClassError) {
+      message.error('The classes cannot overlap (even the same number).');
+      return false;
+    }
 
-      const res: any = await api.offer.create(parms);
+    // let s = classfications.filter((t: any) => {
+    //   return t.lowerBoundType[0] == 1 && t.upperBoundType[0] == 0
+    // })
 
-      if (res.code === 200) {
-        setTemplateInfo((prev: any) => {
-          let obj = {...prev};
-          if(subCategory){
-            obj.subCategory = subCategory
-          }
-          return {
-            ...obj,
-            classfications: JSON.stringify(classfications),
-            expirationDate,
-            link: `${window.location.href.split('/home/template')[0]}/page/${res.result.id}`,
-            claimId: res.result.id
-          }
-        })
+    // if (s.length == 1) {
+    //   if (maxObj.isbH == 0) {
+    //     if (s[0].lowerBoundType[1] == 0) {
+    //       if (s[0].lowerBoundType[2] < maxObj.value) {
+    //         message.error('The classes cannot overlap (even the same number).');
+    //         return false;
+    //       }
+    //     }
+    //   }
+    // }
 
-        setActiveTabStr('setLink');
+    let parms: object = {
+      name: templateInfo.name,
+      template: templateInfo.id,
+      preClaims: JSON.stringify(preClaims),
+    };
 
-      }
+    const res: any = await api.offer.create(parms);
+
+    if (res.code === 200) {
+      setTemplateInfo((prev: any) => {
+        let obj = { ...prev };
+        if (subCategory) {
+          obj.subCategory = subCategory
+        }
+        return {
+          ...obj,
+          classfications: JSON.stringify(classfications),
+          expirationDate,
+          link: `${window.location.href.split('/home/template')[0]}/page/${res.result.id}`,
+          claimId: res.result.id
+        }
+      })
+
+      setActiveTabStr('setLink');
+
     }
   }
 
   return (
     <div className="claim-con">
       <div className="claim-top">
-        <div className="claim-return" onClick={() => setActiveTabStr('creatTempalte')}><ArrowLeftOutlined /></div>
+        <div className="claim-return" onClick={() => setActiveTabStr('templateList')}><ArrowLeftOutlined /></div>
         <div className="claim-des">
           <div>Offer claims</div>
           <div>
@@ -193,24 +278,24 @@ export default function CreateTemplate() {
             }
           </div>
           {
-              templateInfo.dataCategory === '1' && !templateInfo.subCategory && (
-                <div>
-                  <div className="info-common-style">
-                    <span>NFT Contract:</span>
-                  </div>
-                  <div><Input value={subCategory} onChange={e => onSubChange(e.target.value)}/></div>
+            templateInfo.dataCategory === '1' && !templateInfo.subCategory && (
+              <div>
+                <div className="info-common-style">
+                  <span>NFT Contract:</span>
                 </div>
-              )
+                <div><Input value={subCategory} onChange={e => onSubChange(e.target.value)} /></div>
+              </div>
+            )
           }
           {
-              templateInfo.dataCategory === '2' && !templateInfo.subCategory && (
-                <div>
-                  <div className="info-common-style">
-                    <span>Space ID:</span>
-                  </div>
-                  <div><Input value={subCategory} onChange={e => onSubChange(e.target.value)}/></div>
+            templateInfo.dataCategory === '2' && !templateInfo.subCategory && (
+              <div>
+                <div className="info-common-style">
+                  <span>Space ID:</span>
                 </div>
-              )
+                <div><Input value={subCategory} onChange={e => onSubChange(e.target.value)} /></div>
+              </div>
+            )
           }
         </div>
         {classfications.map((item: any, index: number) =>
@@ -231,19 +316,19 @@ export default function CreateTemplate() {
               /></span>
             </div>
             <div className="claim--bound">
+              <div>
+                <div>Lower Bound:</div>
+                <div><Input value={item.lowerBoundType[2]} disabled={item.lowerBoundType[0] === 0} onChange={e => onChange(index, 'lowerBoundType', 2, e.target.value)} /></div>
+                <div><Checkbox checked={item.lowerBoundType[1] === 1} disabled>Include lower Bound(≥)</Checkbox></div>
+              </div>
               {
-                item.lowerBoundType[0] === 1 &&
+                item.upperBoundType[0] === 1 &&
                 <div>
-                  <div>Lower Bound:</div>
-                  <div><Input value={item.lowerBoundType[2]} onChange={e => onChange(index, 'lowerBoundType', 2, e.target.value)} /></div>
-                  <div><Checkbox checked={item.lowerBoundType[1] === 1} disabled>Include lower Bound(≥)</Checkbox></div>
+                  <div>Upper Bound:</div>
+                  <div><Input value={item.upperBoundType[2]} onChange={e => onChange(index, 'upperBoundType', 2, e.target.value)} /></div>
+                  <div><Checkbox checked={item.upperBoundType[1] === 1} disabled>Include Upper Bound(≤)</Checkbox></div>
                 </div>
               }
-              <div>
-                <div>Upper Bound:</div>
-                <div><Input value={item.upperBoundType[2]} onChange={e => onChange(index, 'upperBoundType', 2, e.target.value)} /></div>
-                <div><Checkbox checked={item.upperBoundType[1] === 1} disabled>Include Upper Bound(≤)</Checkbox></div>
-              </div>
             </div>
           </div>
         )}
@@ -251,7 +336,7 @@ export default function CreateTemplate() {
           templateInfo.isExpirable &&
           <div>
             <div className="claim-form-title">Claims expiration date</div>
-            <div><DatePicker format={dateFormat} value={moment(expirationDate, dateFormat)} onChange={(date: any, dateString: string) => setExpirationDate(dateString)} /></div>
+            <div><DatePicker format={dateFormat} value={expirationDate ? moment(expirationDate, dateFormat) : null} onChange={(date: any, dateString: string) => setExpirationDate(dateString)} /></div>
           </div>
         }
         <div className="button-group">

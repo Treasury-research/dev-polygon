@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './index.scss';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Checkbox, Select, Button, message } from 'antd';
-import { moduleActive, templateInfos } from '../../../store/atom';
+import { moduleActive, templateInfos, routerNm } from '../../../store/atom';
 import { useRecoilState } from 'recoil';
 import { RouteComponentProps, useHistory } from 'react-router-dom';
 import IconCopy from "./../../../static/img/copy.png";
@@ -26,6 +26,8 @@ export default function CreateTemplate() {
 
   const [classfications, setClassfications] = useState<any>([defaultClassficationItem]);
 
+  const [routerName, setRouterName] = useRecoilState<any>(routerNm);
+
   const [triggerValue, setTriggerValue] = useState('0');
 
   const history = useHistory();
@@ -34,24 +36,24 @@ export default function CreateTemplate() {
     let classItems: any = JSON.parse(templateInfo.classfications);
     classItems.map((t: any) => {
       if (!t.lowerBoundType[3] && t.lowerBoundType[3] !== 0) {
-        t.lowerBoundType[3] = 1;
-        t.upperBoundType[3] = 1;
+        t.lowerBoundType[3] = 0;
+        t.upperBoundType[3] = 0;
         t.triggerValue = '0';
       } else {
-        if (t.lowerBoundType[3] === 1 &&
-          t.upperBoundType[3] === 1) {
+        if (t.lowerBoundType[3] === 0 &&
+          t.upperBoundType[3] === 0) {
           t.triggerValue = '0';
         }
-        if (t.lowerBoundType[3] === 0 &&
-          t.upperBoundType[3] === 1) {
-          t.triggerValue = '1';
-        }
         if (t.lowerBoundType[3] === 1 &&
           t.upperBoundType[3] === 0) {
-          t.triggerValue = '2';
+          t.triggerValue = '1';
         }
         if (t.lowerBoundType[3] === 0 &&
-          t.upperBoundType[3] === 0) {
+          t.upperBoundType[3] === 1) {
+          t.triggerValue = '2';
+        }
+        if (t.lowerBoundType[3] === 1 &&
+          t.upperBoundType[3] === 1) {
           t.triggerValue = '3';
         }
       }
@@ -66,20 +68,20 @@ export default function CreateTemplate() {
       classCations.map((t: any, i: number) => {
         if (index === i) {
           if (value === '0') {
-            t.lowerBoundType[3] = 1;
-            t.upperBoundType[3] = 1;
+            t.lowerBoundType[3] = 0;
+            t.upperBoundType[3] = 0;
           }
           if (value === '1') {
-            t.lowerBoundType[3] = 0;
-            t.upperBoundType[3] = 1;
-          }
-          if (value === '2') {
             t.lowerBoundType[3] = 1;
             t.upperBoundType[3] = 0;
           }
-          if (value === '3') {
+          if (value === '2') {
             t.lowerBoundType[3] = 0;
-            t.upperBoundType[3] = 0;
+            t.upperBoundType[3] = 1;
+          }
+          if (value === '3') {
+            t.lowerBoundType[3] = 1;
+            t.upperBoundType[3] = 1;
           }
           t.triggerValue = value;
         }
@@ -99,6 +101,7 @@ export default function CreateTemplate() {
   const finishOffer = async () => {
 
     let preClaims: any = [];
+
     classfications.map((t: any) => {
       preClaims.push({
         name: t.name,
@@ -122,11 +125,8 @@ export default function CreateTemplate() {
       if (res.code === 200) {
         message.success('Offered claim');
         setTemplateInfo({});
-        if (history.location.pathname === '/home/template'){
-          setActiveTabStr('templateList');
-        }else{
-          setActiveTabStr('claimList');
-        }
+        setActiveTabStr('claimList');
+        setRouterName('claim');
       }
   }
 
@@ -183,7 +183,7 @@ export default function CreateTemplate() {
             <div className="revocation-base-info">
               <div className="info-common-style">
                 <span>Creation Date:</span>
-                <span>{templateInfo.createdAt.split('T')[0]}</span>
+                <span>{templateInfo.createdAt ? templateInfo.createdAt.split('T')[0] : '--'}</span>
               </div>
               <div className="info-common-style">
                 <span>Expiration Date:</span>
