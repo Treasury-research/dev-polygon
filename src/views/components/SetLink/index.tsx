@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './index.scss';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Checkbox, Input, Button } from 'antd';
-import { moduleActive, templateInfos } from '../../../store/atom';
+import { moduleActive, templateInfos, routerNm } from '../../../store/atom';
 import { useRecoilState } from 'recoil';
 import IconCopy from "./../../../static/img/copy.png";
 import { copyToClipboard } from "./../../../utils/tools";
@@ -24,6 +24,8 @@ export default function CreateTemplate() {
 
   const [link, setLink] = useState("");
 
+  const [routerName, setRouterName] = useRecoilState<any>(routerNm);
+
   useEffect(() => {
     setClassfications(JSON.parse(templateInfo.classfications));
     if (templateInfo.link) setLink(templateInfo.link);
@@ -39,10 +41,16 @@ export default function CreateTemplate() {
     setActiveTabStr('revocation');
   }
 
+  const fallback = () => {
+    setActiveTabStr('claimList');
+    setRouterName('claim');
+    setTemplateInfo({});
+  }
+
   return (
     <div className="link-con">
       <div className="link-top">
-        <div className="link-return" onClick={() => setActiveTabStr('offerClaims')}><ArrowLeftOutlined /></div>
+        <div className="link-return" onClick={() => fallback()}><ArrowLeftOutlined /></div>
         <div className="link-des">
           <div>Offer claims</div>
           <div>

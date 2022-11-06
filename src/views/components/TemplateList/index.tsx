@@ -61,7 +61,7 @@ export default function List() {
       { title: 'Class Name', width: 200, dataIndex: 'name', key: 'name', render: (text: string, record: any) => <span className="templateName">{text}</span> },
       { title: 'Lower Bound', width: 200, dataIndex: 'lowerBoundType', key: 'lowerBoundType', render: (text: any) => <span>{text[0] === 0 ? '>' : text[1] === 1 ? '≥' : '>'}</span>},
       { title: 'Upper Bound', width: 200, dataIndex: 'upperBoundType', key: 'upperBoundType', render: (text: any) => <span>{text[0] === 0 ? '-' : text[1] === 1 ? '≤' : '<'}</span>},
-      { title: 'Description', width: 200, dataIndex: 'description', key: 'description' },
+      { title: 'Description', width: 200, dataIndex: 'description', key: 'description', render: (text: any) => <span>{text || '-'}</span> },
     ];
 
     let renderData: Array<any> = [];
