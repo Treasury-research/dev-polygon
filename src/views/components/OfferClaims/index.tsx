@@ -207,22 +207,39 @@ export default function CreateTemplate() {
       template: templateInfo.id,
       preClaims: JSON.stringify(preClaims),
     };
+
     const res: any = await api.offer.create(parms);
+
     if (res.code === 200) {
-      setTemplateInfo((prev: any) => {
-        let obj = { ...prev };
-        if (subCategory) {
-          obj.subCategory = subCategory
-        }
-        return {
-          ...obj,
-          classfications: JSON.stringify(classfications),
-          expirationDate,
-          link: `${window.location.href.split('/home/template')[0]}/page/${res.result.id}`,
-          claimId: res.result.id
-        }
-      })
-      setActiveTabStr('setLink');
+
+      let parms1: object = {
+        name: templateInfo.name,
+        template: templateInfo.id,
+        preClaims: JSON.stringify(preClaims),
+        link: `${window.location.href.split('/home/template')[0]}/page/${res.result.id}`
+      };
+
+      const res1: any = await api.offer.patch(res.result.id, parms1);
+
+      if (res1.code === 200) {
+
+        setTemplateInfo((prev: any) => {
+          let obj = { ...prev };
+          if (subCategory) {
+            obj.subCategory = subCategory
+          }
+          return {
+            ...obj,
+            classfications: JSON.stringify(classfications),
+            expirationDate,
+            link: `${window.location.href.split('/home/template')[0]}/page/${res.result.id}`,
+            claimId: res.result.id
+          }
+        })
+
+        setActiveTabStr('setLink');
+
+      }
     }
   }
 

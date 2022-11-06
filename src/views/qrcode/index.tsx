@@ -29,7 +29,7 @@ export default function QrCode(props: RouteComponentProps) {
           src={QrImg}
         />
       </div>
-      <div className='title1'>You received a claim offer from arc</div>
+      <div className='title1'>You received a claim offer from account@knn3</div>
       <div>
         {
           jsonData && <QRCode value={jsonData} size={256} />
