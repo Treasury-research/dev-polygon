@@ -17,6 +17,7 @@ export default function QrCode(props: RouteComponentProps) {
   };
 
   useEffect(() => {
+    document.title = 'Claim Offer'
     getQrCode();
   }, []);
 
