@@ -175,6 +175,10 @@ export default function CreateTemplate() {
 
     })
 
+    let s = classfications.filter((t: any) => {
+      return t.lowerBoundType[0] == 0 && t.upperBoundType[0] == 0
+    })
+
     if (errorMsg) {
       message.error(errorMsg);
       return false;
@@ -185,29 +189,25 @@ export default function CreateTemplate() {
       return false;
     }
 
-    // let s = classfications.filter((t: any) => {
-    //   return t.lowerBoundType[0] == 1 && t.upperBoundType[0] == 0
-    // })
-
-    // if (s.length == 1) {
-    //   if (maxObj.isbH == 0) {
-    //     if (s[0].lowerBoundType[1] == 0) {
-    //       if (s[0].lowerBoundType[2] < maxObj.value) {
-    //         message.error('The classes cannot overlap (even the same number).');
-    //         return false;
-    //       }
-    //     }
-    //   }
-    // }
+    if (s.length > 1) {
+      message.error('The classes cannot overlap (even the same number).');
+      return false;
+      // if (maxObj.isbH == 0) {
+      //   if (s[0].lowerBoundType[1] == 0) {
+      //     if (s[0].lowerBoundType[2] < maxObj.value) {
+      //       message.error('The classes cannot overlap (even the same number).');
+      //       return false;
+      //     }
+      //   }
+      // }
+    }
 
     let parms: object = {
       name: templateInfo.name,
       template: templateInfo.id,
       preClaims: JSON.stringify(preClaims),
     };
-
     const res: any = await api.offer.create(parms);
-
     if (res.code === 200) {
       setTemplateInfo((prev: any) => {
         let obj = { ...prev };
@@ -222,9 +222,7 @@ export default function CreateTemplate() {
           claimId: res.result.id
         }
       })
-
       setActiveTabStr('setLink');
-
     }
   }
 

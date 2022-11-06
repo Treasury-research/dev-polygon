@@ -54,7 +54,8 @@ export default function CreateTemplate() {
 
   const doCreate = async () => {
     let noInputChecked = classfications.some((t: any) => {
-      return (t.lowerBoundType[0] === 0 && t.upperBoundType[0] === 0) || !t.name;
+      // return (t.lowerBoundType[0] === 0 && t.upperBoundType[0] === 0) || !t.name;
+      return !t.name;
     })
 
     if (noInputChecked || !templateName) {
@@ -176,7 +177,10 @@ export default function CreateTemplate() {
                 <div><Input placeholder="e.g. Gold" value={item.name} onChange={(e) => onClassificationChange(index, 'name', e.target.value)} /></div>
               </div>
               <div className="template-form-bound">
-                <div>Bounds<span className="require">*</span> (at least one)</div>
+                <div>Bounds
+                  {/* <span className="require">*</span> 
+                  (at least one) */}
+                </div>
                 <div className="template-form-bound-select">
                   <div>
                     <div>
