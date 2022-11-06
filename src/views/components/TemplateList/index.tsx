@@ -34,7 +34,9 @@ export default function List() {
   const [drawerRecords, setDrawerRecords] = useState(DataType);
 
   const getTemplateList = async () => {
-    const res: any = await api.template.list();
+    const res: any = await api.template.list({
+      sort:'createdAt,DESC'
+    });
     setTemplateList(res?.result?.data);
   };
 

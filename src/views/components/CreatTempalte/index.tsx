@@ -48,6 +48,9 @@ export default function CreateTemplate() {
     console.log('bond change', index, field, subIndex, value)
     setClassfications((prev: any) => {
       prev[index][field][subIndex] = value;
+      if(subIndex === 0){
+        prev[index][field][1] = 0;
+      }
       return [...prev]
     })
   }

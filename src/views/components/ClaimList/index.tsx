@@ -37,7 +37,9 @@ export default function List() {
   const [drawerRecords, setDrawerRecords] = useState(DataType);
 
   const getclaimList = async () => {
-    const res: any = await api.offer.list();
+    const res: any = await api.offer.list({
+      sort:'createdAt,DESC'
+    });
     res?.result?.data.map((t: any) => {
       t.dataCategory = t.template.dataCategory
     })
